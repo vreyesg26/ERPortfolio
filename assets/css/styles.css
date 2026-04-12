@@ -156,8 +156,8 @@ body.dark-theme {
 }
 
 .profile__perfil {
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   background: linear-gradient(180deg, 
               hsla(var(--hue), var(--sat), var(--lig), 1) 0%, 
               hsla(var(--hue), var(--sat), var(--lig), .2) 100%);
@@ -168,7 +168,7 @@ body.dark-theme {
 }
 
 .profile__perfil img {
-  width: 75px;
+  width: 90px;
   object-fit: cover;
 }
 
@@ -508,13 +508,6 @@ body.dark-theme {
     width: 135px;
     height: 135px;
     margin-bottom: 1rem;
-  }
-  .profile__perfil {
-    width: 120px;
-    height: 120px;
-  }
-  .profile__perfil img {
-    width: 90px;
   }
   .profile__profession {
     margin-bottom: 1.5rem;
