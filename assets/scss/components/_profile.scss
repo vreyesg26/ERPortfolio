@@ -3,6 +3,14 @@
     position: relative;
     padding-top: 3.5rem;
 
+    &__actions{
+        position: absolute;
+        top: 1.5rem;
+        right: 0;
+        display: flex;
+        align-items: center;
+        column-gap: .75rem;
+    }
     &__container{
         row-gap: 2rem;
     }
@@ -89,4 +97,45 @@
     &__buttons-small{
         column-gap: .25rem;
     }
+}
+
+/*=============== CV LANGUAGE ===============*/
+.change-language{
+    display: inline-flex;
+    align-items: center;
+    column-gap: .25rem;
+    padding: .375rem .5rem; /* Comfortable tap target */
+    border: none;
+    outline: none;
+    background-color: transparent;
+    font-family: var(--body-font);
+    font-size: var(--small-font-size);
+    font-weight: 500;
+    color: var(--title-color);
+    cursor: pointer;
+    transition: .3s;
+
+    & i{
+        font-size: 1.25rem;
+    }
+
+    &:hover{
+        color: var(--first-color);
+    }
+    &:focus-visible{
+        outline: 2px solid var(--first-color);
+        outline-offset: 2px;
+        border-radius: .5rem;
+    }
+}
+/*=============== LANGUAGE TRANSITION ===============*/
+/* The translated text fades out and back in instead of snapping */
+[data-i18n],
+.change-language span{
+    transition: opacity .2s;
+}
+
+.language-switching [data-i18n],
+.language-switching .change-language span{
+    opacity: 0;
 }

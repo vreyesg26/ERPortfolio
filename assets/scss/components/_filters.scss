@@ -13,7 +13,8 @@
         width: 100%;
         border: none;
         outline: none;
-        padding: 1rem;
+        padding: 1rem .5rem;
+        white-space: nowrap;
         color: var(--title-color);
         font-size: var(--small-font-size);
         font-family: var(--body-font);
@@ -21,11 +22,26 @@
         border-radius: .75rem;
         cursor: pointer;
         background-color: transparent;
-        transition: .3s;
+        transition: all .3s, opacity .2s;
 
         &:hover{
             background-color: var(--body-color);
         }
+    }
+}
+
+/*=============== ABOUT ===============*/
+.about{
+    &__content{
+        justify-content: center;
+    }
+    &__group{
+        max-width: 640px;
+        display: grid;
+        row-gap: 1rem;
+    }
+    &__description{
+        line-height: 1.6;
     }
 }
 
@@ -116,12 +132,19 @@
     }
 }
 
-/* Hide and show projects & skills */
+/* Hide and show about, projects & skills */
 .filters [data-content]{
     display: none;
 }
 .filters__active[data-content]{
     display: grid;
+    transition: opacity .2s;
+}
+
+/* The outgoing panel fades out before the swap, the incoming one after,
+   so the height difference between panels happens while nothing is visible */
+.filters__fade[data-content]{
+    opacity: 0;
 }
 
 /* Activate button filter */

@@ -49,8 +49,15 @@
   <body>
     <!--=============== HEADER ===============-->
     <header class="profile container">
-      <!-- Theme button -->
-      <i class="ri-moon-line change-theme" id="theme-button"></i>
+      <!-- CV language and theme buttons -->
+      <div class="profile__actions">
+        <button type="button" class="change-language" id="language-button">
+          <i class="ri-global-line"></i>
+          <span id="language-code">EN</span>
+        </button>
+
+        <i class="ri-moon-line change-theme" id="theme-button"></i>
+      </div>
 
       <div class="profile__container grid">
         <div class="profile__data">
@@ -61,7 +68,9 @@
           </div>
 
           <h2 class="profile__name">Efren Eduardo Reyes Gudiel</h2>
-          <h3 class="profile__profession">Civil Engineer</h3>
+          <h3 class="profile__profession">
+            <span data-i18n="profession">Civil Engineer</span>
+          </h3>
 
           <ul class="profile__social">
             <a
@@ -91,21 +100,21 @@
         <div class="profile__info grid">
           <div class="profile__info-group">
             <h3 class="profile__info-number">+1</h3>
-            <p class="profile__info-description">
+            <p class="profile__info-description" data-i18n="info.years">
               Years of <br />
               work
             </p>
           </div>
           <div class="profile__info-group">
             <h3 class="profile__info-number">+4</h3>
-            <p class="profile__info-description">
+            <p class="profile__info-description" data-i18n="info.projects">
               Completed <br />
               projects
             </p>
           </div>
           <div class="profile__info-group">
             <h3 class="profile__info-number">3</h3>
-            <p class="profile__info-description">
+            <p class="profile__info-description" data-i18n="info.customers">
               Satisfied <br />
               customers
             </p>
@@ -116,10 +125,12 @@
           <!-- Insert your CV -->
           <a
             download=""
-            href="assets/pdf/CV - Efren Reyes (2026).pdf"
+            href="assets/pdf/CV_Efren_Reyes_2026_EN.pdf"
             class="button"
+            id="cv-button"
           >
-            Download CV <i class="ri-download-line"></i>
+            <span data-i18n="cv">Download CV</span>
+            <i class="ri-download-line"></i>
           </a>
 
           <div class="profile__buttons-small">
@@ -128,6 +139,7 @@
               href="https://api.whatsapp.com/send?phone=+50495025008&text=Hola Efren, me gustaría conversar contigo"
               target="_blank"
               class="button button__small button__gray"
+              id="whatsapp-button"
             >
               <i class="ri-whatsapp-line"></i>
             </a>
@@ -149,16 +161,50 @@
       <section class="filters container">
         <!--=============== FILTERS TABS ===============-->
         <ul class="filters__content">
+          <button class="filters__button" data-target="#about" data-i18n="tab.about">
+            About
+          </button>
           <button
             class="filters__button filter-tab-active"
             data-target="#projects"
+            data-i18n="tab.projects"
           >
             Projects
           </button>
-          <button class="filters__button" data-target="#skills">Skills</button>
+          <button class="filters__button" data-target="#skills" data-i18n="tab.skills">
+            Skills
+          </button>
         </ul>
 
         <div class="filters__sections">
+          <!--=============== ABOUT ===============-->
+          <div class="about__content grid" data-content id="about">
+            <div class="about__group">
+              <p class="about__description" data-i18n="about.p1">
+                I am a Civil Engineer from Honduras with practical experience in
+                construction supervision, quality control, and technical
+                documentation. I am currently expanding my expertise in civil
+                engineering design, with a particular interest in road design,
+                earthwork calculations, and infrastructure projects.
+              </p>
+              <p class="about__description" data-i18n="about.p2">
+                I aim to help clients with accurate technical drawings, terrain
+                modeling, quantity takeoffs, and civil engineering drafting
+                tasks. I value precision, clear communication, and delivering
+                organized work according to project requirements.
+              </p>
+              <p class="about__description" data-i18n="about.p3">
+                My goal is to build long-term professional relationships by
+                providing reliable support to engineering firms, contractors,
+                and individual clients.
+              </p>
+              <p class="about__description" data-i18n="about.p4">
+                I am committed to continuous learning and to developing
+                practical, efficient solutions for every project.
+              </p>
+            </div>
+          </div>
+
           <!--=============== PROJECTS ===============-->
           <div
             class="projects__content grid filters__active"
@@ -169,12 +215,13 @@
               <img
                 src="assets/img/plans/project1.webp"
                 alt="Plano perimetral"
+                data-i18n-alt="plan1.alt"
                 class="projects__img"
               />
 
               <div class="projects__modal">
                 <div>
-                  <h3 class="projects__title">Plano perimetral</h3>
+                  <h3 class="projects__title" data-i18n="plan1.title">Plano perimetral</h3>
                   <a
                     href="https://drive.google.com/file/d/1TqGCBHruYpFfvUMJeccsdSi_k1Y52OYh/view?usp=drive_link"
                     class="projects__button button button__small"
@@ -190,12 +237,13 @@
               <img
                 src="assets/img/plans/project2.webp"
                 alt="Plano de curvas de nivel"
+                data-i18n-alt="plan2.alt"
                 class="projects__img"
               />
 
               <div class="projects__modal">
                 <div>
-                  <h3 class="projects__title">Curvas de nivel</h3>
+                  <h3 class="projects__title" data-i18n="plan2.title">Curvas de nivel</h3>
                   <a
                     href="https://drive.google.com/file/d/1PvOF9Kvrbgb3IzXfWpBI32uiS13tNajZ/view?usp=drive_link"
                     class="projects__button button button__small"
@@ -211,12 +259,13 @@
               <img
                 src="assets/img/plans/project3.webp"
                 alt="Planos de detalles muro perimetral"
+                data-i18n-alt="plan3.alt"
                 class="projects__img"
               />
 
               <div class="projects__modal">
                 <div>
-                  <h3 class="projects__title">Detalles muro perimetral</h3>
+                  <h3 class="projects__title" data-i18n="plan3.title">Detalles muro perimetral</h3>
                   <a
                     href="https://drive.google.com/file/d/1B7zCWk7-CYqAmOvYGdvHTQgthWk9qcGA/view?usp=drive_link"
                     class="projects__button button button__small"
@@ -232,12 +281,13 @@
               <img
                 src="assets/img/plans/project4.webp"
                 alt="Plano de planta perfil calle 1"
+                data-i18n-alt="plan4.alt"
                 class="projects__img"
               />
 
               <div class="projects__modal">
                 <div>
-                  <h3 class="projects__title">Planta perfil calle 1</h3>
+                  <h3 class="projects__title" data-i18n="plan4.title">Planta perfil calle 1</h3>
                   <a
                     href="https://drive.google.com/file/d/1j4EPqHBNJQFOMN1mqHxqj4WihHPOHUfm/view?usp=drive_link"
                     class="projects__button button button__small"
@@ -253,12 +303,13 @@
               <img
                 src="assets/img/plans/project5.webp"
                 alt="Plano de planta perfil calle 3"
+                data-i18n-alt="plan5.alt"
                 class="projects__img"
               />
 
               <div class="projects__modal">
                 <div>
-                  <h3 class="projects__title">
+                  <h3 class="projects__title" data-i18n="plan5.title">
                     Secciones Transversales Calle 3
                   </h3>
                   <a
@@ -276,12 +327,13 @@
               <img
                 src="assets/img/plans/project6.webp"
                 alt="Caseta de Riego | Proyecto Piloto"
+                data-i18n-alt="plan6.alt"
                 class="projects__img"
               />
 
               <div class="projects__modal">
                 <div>
-                  <h3 class="projects__title">
+                  <h3 class="projects__title" data-i18n="plan6.title">
                     Caseta de Riego | Proyecto Piloto
                   </h3>
                   <a
@@ -299,12 +351,13 @@
               <img
                 src="assets/img/plans/project7.webp"
                 alt="Servicios Sanitarios 1"
+                data-i18n-alt="plan7.alt"
                 class="projects__img"
               />
 
               <div class="projects__modal">
                 <div>
-                  <h3 class="projects__title">Servicios Sanitarios 1</h3>
+                  <h3 class="projects__title" data-i18n="plan7.title">Servicios Sanitarios 1</h3>
                   <a
                     href="https://drive.google.com/file/d/1mGUy0K-wd0vKlwYm3v97Ci0E7Dijgv1k/view?usp=drive_link"
                     class="projects__button button button__small"
@@ -320,12 +373,13 @@
               <img
                 src="assets/img/plans/project8.webp"
                 alt="Servicios Sanitarios 2"
+                data-i18n-alt="plan8.alt"
                 class="projects__img"
               />
 
               <div class="projects__modal">
                 <div>
-                  <h3 class="projects__title">Servicios Sanitarios 2</h3>
+                  <h3 class="projects__title" data-i18n="plan8.title">Servicios Sanitarios 2</h3>
                   <a
                     href="https://drive.google.com/file/d/13HxOIc83RXxlvcAYMK2iE9Ul6G7WZLvY/view?usp=drive_link"
                     class="projects__button button button__small"
@@ -341,12 +395,13 @@
               <img
                 src="assets/img/plans/project9.webp"
                 alt="Análisis de distribución por bloques"
+                data-i18n-alt="plan9.alt"
                 class="projects__img"
               />
 
               <div class="projects__modal">
                 <div>
-                  <h3 class="projects__title">
+                  <h3 class="projects__title" data-i18n="plan9.title">
                     Análisis de distribución por bloques
                   </h3>
                   <a
@@ -364,12 +419,13 @@
               <img
                 src="assets/img/plans/project10.webp"
                 alt="Alcantarillado Sanitario, Aguas lluvias y Agua potable"
+                data-i18n-alt="plan10.alt"
                 class="projects__img"
               />
 
               <div class="projects__modal">
                 <div>
-                  <h3 class="projects__title">
+                  <h3 class="projects__title" data-i18n="plan10.title">
                     Alcantarillado Sanitario, Aguas lluvias y Agua potable
                   </h3>
                   <a
@@ -387,12 +443,13 @@
               <img
                 src="assets/img/plans/project11.webp"
                 alt="Plano Perimetral Blanca Argeñal"
+                data-i18n-alt="plan11.alt"
                 class="projects__img"
               />
 
               <div class="projects__modal">
                 <div>
-                  <h3 class="projects__title">
+                  <h3 class="projects__title" data-i18n="plan11.title">
                     Plano Perimetral Blanca Argeñal
                   </h3>
                   <a
@@ -410,7 +467,7 @@
           <!--=============== SKILLS ===============-->
           <div class="skills__content grid" data-content id="skills">
             <div class="skills__area">
-              <h3 class="skills__title">Design</h3>
+              <h3 class="skills__title" data-i18n="skills.design">Design</h3>
 
               <div class="skills__box">
                 <div class="skills__group">
@@ -419,7 +476,7 @@
 
                     <div>
                       <h3 class="skills__name">Autocad</h3>
-                      <span class="skills__level">Intermediate</span>
+                      <span class="skills__level" data-i18n="level.intermediate">Intermediate</span>
                     </div>
                   </div>
 
@@ -428,7 +485,7 @@
 
                     <div>
                       <h3 class="skills__name">Civil 3D</h3>
-                      <span class="skills__level">Intermediate</span>
+                      <span class="skills__level" data-i18n="level.intermediate">Intermediate</span>
                     </div>
                   </div>
 
@@ -437,7 +494,7 @@
 
                     <div>
                       <h3 class="skills__name">Revit</h3>
-                      <span class="skills__level">Intermediate</span>
+                      <span class="skills__level" data-i18n="level.intermediate">Intermediate</span>
                     </div>
                   </div>
                 </div>
@@ -448,7 +505,7 @@
 
                     <div>
                       <h3 class="skills__name">Etabs</h3>
-                      <span class="skills__level">Intermediate</span>
+                      <span class="skills__level" data-i18n="level.intermediate">Intermediate</span>
                     </div>
                   </div>
 
@@ -457,7 +514,7 @@
 
                     <div>
                       <h3 class="skills__name">Sap 2000</h3>
-                      <span class="skills__level">Intermediate</span>
+                      <span class="skills__level" data-i18n="level.intermediate">Intermediate</span>
                     </div>
                   </div>
                 </div>
@@ -474,7 +531,7 @@
 
                     <div>
                       <h3 class="skills__name">Word</h3>
-                      <span class="skills__level">Intermediate</span>
+                      <span class="skills__level" data-i18n="level.intermediate">Intermediate</span>
                     </div>
                   </div>
 
@@ -483,7 +540,7 @@
 
                     <div>
                       <h3 class="skills__name">Excel</h3>
-                      <span class="skills__level">Advance</span>
+                      <span class="skills__level" data-i18n="level.advanced">Advanced</span>
                     </div>
                   </div>
 
@@ -492,7 +549,7 @@
 
                     <div>
                       <h3 class="skills__name">Project</h3>
-                      <span class="skills__level">Intermediate</span>
+                      <span class="skills__level" data-i18n="level.intermediate">Intermediate</span>
                     </div>
                   </div>
                 </div>
@@ -503,7 +560,7 @@
 
                     <div>
                       <h3 class="skills__name">Power Point</h3>
-                      <span class="skills__level">Intermediate</span>
+                      <span class="skills__level" data-i18n="level.intermediate">Intermediate</span>
                     </div>
                   </div>
                 </div>

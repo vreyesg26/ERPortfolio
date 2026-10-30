@@ -79,9 +79,6 @@ img {
 
 /*=============== THEME ===============*/
 .change-theme {
-  position: absolute;
-  top: 1.5rem;
-  right: 0;
   font-size: 1.25rem;
   color: var(--title-color);
   cursor: pointer;
@@ -144,6 +141,15 @@ body.dark-theme {
 .profile {
   position: relative;
   padding-top: 3.5rem;
+}
+
+.profile__actions {
+  position: absolute;
+  top: 1.5rem;
+  right: 0;
+  display: flex;
+  align-items: center;
+  column-gap: .75rem;
 }
 
 .profile__container {
@@ -245,6 +251,49 @@ body.dark-theme {
   column-gap: .25rem;
 }
 
+/*=============== CV LANGUAGE ===============*/
+.change-language {
+  display: inline-flex;
+  align-items: center;
+  column-gap: .25rem;
+  padding: .375rem .5rem; /* Comfortable tap target */
+  border: none;
+  outline: none;
+  background-color: transparent;
+  font-family: var(--body-font);
+  font-size: var(--small-font-size);
+  font-weight: 500;
+  color: var(--title-color);
+  cursor: pointer;
+  transition: .3s;
+}
+
+.change-language i {
+  font-size: 1.25rem;
+}
+
+.change-language:hover {
+  color: var(--first-color);
+}
+
+.change-language:focus-visible {
+  outline: 2px solid var(--first-color);
+  outline-offset: 2px;
+  border-radius: .5rem;
+}
+
+/*=============== LANGUAGE TRANSITION ===============*/
+/* The translated text fades out and back in instead of snapping */
+[data-i18n], 
+.change-language span {
+  transition: opacity .2s;
+}
+
+.language-switching [data-i18n], 
+.language-switching .change-language span {
+  opacity: 0;
+}
+
 /*=============== BUTTONS ===============*/
 .button {
   display: inline-flex;
@@ -295,7 +344,8 @@ body.dark-theme {
   width: 100%;
   border: none;
   outline: none;
-  padding: 1rem;
+  padding: 1rem .5rem;
+  white-space: nowrap;
   color: var(--title-color);
   font-size: var(--small-font-size);
   font-family: var(--body-font);
@@ -303,11 +353,26 @@ body.dark-theme {
   border-radius: .75rem;
   cursor: pointer;
   background-color: transparent;
-  transition: .3s;
+  transition: all .3s, opacity .2s;
 }
 
 .filters__button:hover {
   background-color: var(--body-color);
+}
+
+/*=============== ABOUT ===============*/
+.about__content {
+  justify-content: center;
+}
+
+.about__group {
+  max-width: 640px;
+  display: grid;
+  row-gap: 1rem;
+}
+
+.about__description {
+  line-height: 1.6;
 }
 
 /*=============== PROJECTS ===============*/
@@ -404,13 +469,20 @@ body.dark-theme {
   font-size: var(--smaller-font-size);
 }
 
-/* Hide and show projects & skills */
+/* Hide and show about, projects & skills */
 .filters [data-content] {
   display: none;
 }
 
 .filters__active[data-content] {
   display: grid;
+  transition: opacity .2s;
+}
+
+/* The outgoing panel fades out before the swap, the incoming one after,
+   so the height difference between panels happens while nothing is visible */
+.filters__fade[data-content] {
+  opacity: 0;
 }
 
 /* Activate button filter */
@@ -454,6 +526,7 @@ body.dark-theme {
   .profile__info {
     column-gap: 1.5rem;
   }
+
   .profile__buttons {
     flex-direction: column;
     row-gap: 1rem;
@@ -496,7 +569,7 @@ body.dark-theme {
     margin-right: auto;
   }
 
-  .change-theme {
+  .profile__actions {
     top: 2.5rem;
     right: 2.5rem;
   }
