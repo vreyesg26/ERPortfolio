@@ -1,0 +1,19 @@
+# Normaliza los saltos de línea. Va DESPUÉS de borrar el sitio estático a
+# propósito: index.html, assets/js/main.js y los parciales de assets/scss/
+# estaban guardados en CRLF, y añadir esto mientras existían habría hecho que
+# git los renormalizara, produciendo un diff de mil líneas sobre archivos que
+# de todos modos iban a desaparecer.
+#
+# El repo ya no tiene nada en CRLF, así que esto solo sirve de aquí en
+# adelante: todo texto se guarda en LF sin importar en qué sistema se edite.
+* text=auto eol=lf
+
+# Binarios: que git no intente convertirles nada.
+*.png binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
