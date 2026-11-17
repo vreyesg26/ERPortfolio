@@ -1,0 +1,38 @@
+---
+import type {PROFILE_QUERY_RESULT} from '../sanity.types'
+
+type Profile = NonNullable<PROFILE_QUERY_RESULT>
+
+interface Props {
+  profile: Profile
+}
+
+// cvUrl ya llega elegido por idioma (cvEs / cvEn) desde la consulta.
+// El teléfono va sin "+": es el formato documentado de WhatsApp.
+const {profile} = Astro.props
+const whatsappUrl = `https://api.whatsapp.com/send?phone=${profile.whatsappPhone}&text=${encodeURIComponent(profile.whatsappMessage)}`
+---
+
+<div class="profile__buttons">
+  {
+    profile.cvUrl && (
+      <a download="" href={profile.cvUrl} class="button" id="cv-button">
+        <span>{profile.cvLabel}</span>
+        <i class="ri-download-line" />
+      </a>
+    )
+  }
+
+  <div class="profile__buttons-small">
+    <a href={whatsappUrl} target="_blank" class="button button__small button__gray" id="whatsapp-button">
+      <i class="ri-whatsapp-line" />
+    </a>
+    {
+      profile.messengerUrl && (
+        <a href={profile.messengerUrl} target="_blank" class="button button__small button__gray">
+          <i class="ri-messenger-line" />
+        </a>
+      )
+    }
+  </div>
+</div>
