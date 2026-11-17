@@ -1,5 +1,18 @@
 # Líneas base visuales de producción
 
+> **AVISO (2026-11-17): estas capturas tienen un artefacto. Para comparar, usa
+> [`../baseline-clean/`](../baseline-clean/README.md).**
+>
+> El `capture.mjs` con el que se tomaron hacía clic en la pestaña mientras `.filters` seguía
+> desplazado -60 px por ScrollReveal, así que a anchos de 576-1280 el ratón acababa sobre el
+> botón "Descargar CV" y lo fotografiaba a mitad de su transición de `:hover`. **El halo del
+> `box-shadow` quedó horneado en esas imágenes.** Comparar contra ellas produce una diferencia
+> constante de ~10-11k px que es error del instrumento, no del sitio.
+>
+> Se conservan intactas como registro histórico de lo que se capturó antes de tocar nada, y
+> porque las imágenes de diff del reporte de la tarea 11 se refieren a estas. El script ya
+> está corregido.
+
 Capturas de `https://ingefrenreyes.netlify.app/` tomadas **antes** de reconciliar el SCSS
 (2026-11-17), para que la tarea 11 compare el sitio Astro contra ellas.
 
