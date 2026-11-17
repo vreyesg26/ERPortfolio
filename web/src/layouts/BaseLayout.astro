@@ -1,16 +1,18 @@
 ---
 import Seo from '../components/Seo.astro'
 import type {Lang} from '../lib/i18n'
-import type {SEO_QUERY_RESULT} from '../sanity.types'
+import {SEO_QUERY} from '../lib/queries'
+import {client} from '../lib/sanity'
 import 'remixicon/fonts/remixicon.css'
 import '../styles/styles.scss'
 
 interface Props {
   lang: Lang
-  seo: NonNullable<SEO_QUERY_RESULT>
 }
 
-const {lang, seo} = Astro.props
+const {lang} = Astro.props
+const seo = await client.fetch(SEO_QUERY, {lang})
+if (!seo) throw new Error('Falta el documento seo en Sanity')
 ---
 
 <!doctype html>

@@ -11,7 +11,13 @@ interface Props {
 const {lang, seo} = Astro.props
 
 // siteUrl viene del singleton; sin barra final para componer las rutas.
-const site = (seo.siteUrl ?? Astro.site?.origin ?? '').replace(/\/+$/, '')
+const origin = seo.siteUrl ?? Astro.site?.origin
+if (!origin) {
+  throw new Error(
+    'Falta la direccion del sitio: rellenar siteUrl en el documento seo de Sanity (canonical y hreflang exigen URLs absolutas).',
+  )
+}
+const site = origin.replace(/\/+$/, '')
 const abs = (l: Lang) => site + pathFor(l)
 const canonical = abs(lang)
 // Se pide el ancho real del asset (va en su _ref: ...-512x512-webp): Sanity no amplia,

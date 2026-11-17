@@ -1,6 +1,6 @@
 import {evaluate, parse} from 'groq-js'
 import {describe, expect, it} from 'vitest'
-import {PROJECTS_QUERY, SKILLS_QUERY, TABS_QUERY} from '../queries'
+import {ABOUT_QUERY, PROJECTS_QUERY, SEO_QUERY, SKILLS_QUERY, TABS_QUERY} from '../queries'
 
 const run = async (query: string, dataset: unknown[], params: Record<string, unknown>) =>
   (await evaluate(parse(query, {params}), {dataset: dataset as any[], params})).get()
@@ -90,5 +90,48 @@ describe('SKILLS_QUERY (fixtures)', () => {
     const docs = [cat('c1', 1), skill('s2', 'c1'), skill('s1', 'c1')]
     const out = (await run(SKILLS_QUERY, docs, {lang: 'es'})) as any[]
     expect(out[0].skills.map((s: any) => s._id)).toEqual(['s1', 's2'])
+  })
+})
+
+describe('ABOUT_QUERY (fixtures)', () => {
+  it('cae a español por párrafo cuando falta la traducción en inglés', async () => {
+    const docs = [
+      {
+        _id: 'a',
+        _type: 'about',
+        paragraphs: [
+          {_key: 'p1', es: 'Hola', en: 'Hello'},
+          {_key: 'p2', es: 'Solo español'},
+        ],
+      },
+    ]
+    const en = (await run(ABOUT_QUERY, docs, {lang: 'en'})) as any
+    expect(en.paragraphs.map((p: any) => p.text)).toEqual(['Hello', 'Solo español'])
+    const es = (await run(ABOUT_QUERY, docs, {lang: 'es'})) as any
+    expect(es.paragraphs.map((p: any) => p.text)).toEqual(['Hola', 'Solo español'])
+  })
+})
+
+describe('SEO_QUERY (fixtures)', () => {
+  it('cae a español campo por campo cuando falta la traducción en inglés', async () => {
+    const docs = [
+      {
+        _id: 'seo',
+        _type: 'seo',
+        title: {es: 'Título', en: 'Title'},
+        description: {es: 'Descripción'},
+        keywords: {es: 'uno, dos'},
+        siteName: {es: 'Sitio', en: 'Site'},
+      },
+    ]
+    const en = (await run(SEO_QUERY, docs, {lang: 'en'})) as any
+    expect(en).toMatchObject({
+      title: 'Title',
+      description: 'Descripción',
+      keywords: 'uno, dos',
+      siteName: 'Site',
+    })
+    const es = (await run(SEO_QUERY, docs, {lang: 'es'})) as any
+    expect(es.title).toBe('Título')
   })
 })
