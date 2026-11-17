@@ -34,9 +34,12 @@ export const tab = defineType({
       validation: (rule) =>
         rule
           .required()
-          .valid(KEYS.map((k) => k.value))
           .custom(async (value, context) => {
             if (!value) return true
+            // options.list solo es la interfaz; la pertenencia se exige aquí.
+            if (!KEYS.some((k) => k.value === value)) {
+              return 'Elige una de las tres secciones: Sobre mí, Proyectos o Aptitudes.'
+            }
             const n = await othersCount(context, 'key == $key', {key: value})
             return n === 0 ? true : 'Ya existe otra pestaña para esta sección.'
           }),

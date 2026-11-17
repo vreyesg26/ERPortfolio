@@ -209,12 +209,6 @@ describe('tab', () => {
     expect(isRequired(f)).toBe(true)
   })
 
-  test('key rechaza cualquier valor fuera de la lista', () => {
-    const c = calls(field(tab, 'key').validation)
-    const valid = c.find((x) => x.method === 'valid')
-    expect(valid?.args[0]).toEqual(['about', 'projects', 'skills'])
-  })
-
   // Contexto simulado: `others` son las pestañas ya guardadas.
   type Tab = {key: string; isDefault?: boolean}
   const ctx = (others: Tab[], id = 'drafts.abc') => ({
@@ -231,6 +225,17 @@ describe('tab', () => {
     if (!c) throw new Error('sin custom')
     return c.args[0] as (v: unknown, c: unknown) => Promise<true | string>
   }
+
+  // La pertenencia a la lista la exige el validador custom (options.list es solo la interfaz).
+  test('key rechaza cualquier valor fuera de la lista', async () => {
+    const check = customOf(field(tab, 'key'))
+    expect(await check('contacto', ctx([]))).not.toBe(true)
+    for (const k of ['about', 'projects', 'skills']) expect(await check(k, ctx([]))).toBe(true)
+  })
+
+  test('key no usa valid(): no está declarado en StringRule', () => {
+    expect(calls(field(tab, 'key').validation).map((c) => c.method)).not.toContain('valid')
+  })
 
   test('una segunda pestaña con key projects se rechaza', async () => {
     const check = customOf(field(tab, 'key'))
