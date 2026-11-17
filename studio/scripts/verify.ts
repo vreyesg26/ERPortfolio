@@ -70,7 +70,16 @@ const main = async () => {
     }
   }
   docs.forEach(collect)
-  check(images.length === 12, '12 referencias de imagen', `hay ${images.length}`)
+  // 12 (foto + 11 planos) + ogImage, que reusa el asset de la foto: 13 referencias, 12 assets de imagen.
+  check(images.length === 13, '13 referencias de imagen (foto, 11 planos, ogImage)', `hay ${images.length}`)
+  check(new Set(images).size === 12, '12 assets de imagen distintos (ogImage reusa la foto)', `hay ${new Set(images).size}`)
+  const profile = docs.find((d) => d._id === 'profile')
+  const seo = docs.find((d) => d._id === 'seo')
+  check(
+    !!seo?.ogImage?.asset?._ref && seo.ogImage.asset._ref === profile?.photo?.asset?._ref,
+    'seo.ogImage apunta al mismo asset que profile.photo',
+  )
+  check(!!profile?.photo?.alt?.trim(), 'profile.photo.alt no esta vacio')
   check(files.length === 2, '2 referencias de PDF', `hay ${files.length}`)
   const dangling = [...images, ...files].filter((id) => !assetIds.has(id))
   check(dangling.length === 0, 'todas las referencias de archivo resuelven', dangling.join(', '))

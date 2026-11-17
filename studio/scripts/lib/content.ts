@@ -48,7 +48,9 @@ export const documents: Doc[] = [
   {
     _id: 'profile',
     _type: 'profile',
-    photo: img('assets/img/profile.webp'),
+    // El original tiene alt="" (decorativa); una foto de la persona no lo es.
+    // Es un string simple, asi que el nombre sirve en los dos idiomas.
+    photo: {...img('assets/img/profile.webp'), alt: 'Efren Eduardo Reyes Gudiel'},
     name: 'Efren Eduardo Reyes Gudiel',
     profession: {es: 'Ingeniero Civil', en: 'Civil Engineer'},
     socialLinks: [
@@ -169,6 +171,8 @@ export const documents: Doc[] = [
       en: 'Efren Reyes - Civil Engineer',
     },
     siteUrl: 'https://ingefrenreyes.netlify.app',
+    // Hoy og:image reusa la foto de perfil: mismo asset, sin subir otro archivo.
+    ogImage: img('assets/img/profile.webp'),
     themeColor: '#000000',
   },
 

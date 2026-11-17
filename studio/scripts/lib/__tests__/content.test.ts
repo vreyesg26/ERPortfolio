@@ -123,6 +123,11 @@ describe('fidelidad de content.ts con el original', () => {
     }
     const profile = doc('profile')
     expect(profile.photo.__file).toBe('assets/img/profile.webp')
+    // El alt del original esta vacio; se fija el nombre (string simple, sirve en ambos idiomas).
+    expect(profile.photo.alt).toBe(profile.name)
+    // og:image reusa la foto de perfil, tambien en el original.
+    expect(doc('seo').ogImage.__file).toBe(profile.photo.__file)
+    expect(html).toContain('og:image" content="https://ingefrenreyes.netlify.app/assets/img/profile.webp"')
     expect(js).toContain(`en: '${profile.cvEn.__file}'`)
     expect(js).toContain(`es: '${profile.cvEs.__file}'`)
     expect(assetPaths).toHaveLength(14)

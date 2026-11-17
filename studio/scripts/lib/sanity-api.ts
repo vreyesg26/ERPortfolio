@@ -48,8 +48,14 @@ export const mutate = (mutations: unknown[]) => {
   })
 }
 
-export const query = async <T = any>(groq: string): Promise<T> => {
+export const query = async <T = any>(
+  groq: string,
+  params: Record<string, unknown> = {},
+): Promise<T> => {
   const {dataset} = config()
-  const out = await sanityFetch(`/data/query/${dataset}?query=${encodeURIComponent(groq)}`)
+  const p = Object.entries(params)
+    .map(([k, v]) => `&$${k}=${encodeURIComponent(JSON.stringify(v))}`)
+    .join('')
+  const out = await sanityFetch(`/data/query/${dataset}?query=${encodeURIComponent(groq)}${p}`)
   return out.result as T
 }
