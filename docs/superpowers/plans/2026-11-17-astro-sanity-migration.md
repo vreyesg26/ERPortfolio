@@ -468,6 +468,12 @@ Run: `pnpm --filter web exec vitest run src/lib`
 
 - [ ] **Step 3: Implementar los cinco módulos**
 
+**Decidir aquí si `@sanity/astro` se queda.** Está instalado desde la tarea 2 porque el spec
+lo lista, pero esta capa usa `@sanity/client` directamente y el Studio se despliega aparte en
+`*.sanity.studio`; el preview visual es un **no objetivo** del spec. Si al terminar esta tarea
+ningún archivo lo importa, reportarlo: la integración sale de `web/package.json` y de
+`astro.config.mjs`. No la uses solo porque está instalada.
+
 `sanity.ts` **no** debe lanzar al importarse si faltan las variables de entorno: con
 `createClient` validando en el constructor, un import que lanza deja el build sin mensaje
 útil. Usar valores centinela y un `console.error`, como en `Portfolio Admin`.
@@ -642,9 +648,19 @@ La paridad de las animaciones es el objetivo 1 y dos de los anti objetivos del s
 
 **Files:**
 - Create: `web/src/islands/Tabs.tsx`, `web/src/islands/ThemeToggle.tsx`,
-  `web/src/components/LanguageToggle.astro`, `web/src/lib/scrollReveal.ts`
-- Modify: `web/src/layouts/BaseLayout.astro`, las dos páginas
+  `web/src/components/LanguageToggle.astro`, `web/src/lib/scrollReveal.ts`,
+  `web/src/test/setup.ts`
+- Modify: `web/src/layouts/BaseLayout.astro`, `web/vitest.config.ts`, las dos páginas
 - Test: `web/src/islands/__tests__/Tabs.test.tsx`
+
+**Antes del paso 1:** `web/vitest.config.ts` fija `environment: 'jsdom'` pero **no tiene
+`setupFiles`**, así que los matchers de `@testing-library/jest-dom` (`toBeInTheDocument`,
+`toHaveClass`) no están registrados y el test de `Tabs` fallaría con un error de matcher
+desconocido, no de comportamiento. Crear `web/src/test/setup.ts` que importe
+`@testing-library/jest-dom/vitest` y un `afterEach(cleanup)`, y referenciarlo desde
+`setupFiles` en `vitest.config.ts`. Va en `setupFiles` y no como efecto de import dentro de
+un helper: registrar matchers al importar un módulo es un efecto secundario escondido que ya
+causó ruido en la migración anterior de Victor.
 
 **Interfaces:**
 - Consumes: `resolveDefaultTab`; `otherLang` y `pathFor` de la tarea 6.
