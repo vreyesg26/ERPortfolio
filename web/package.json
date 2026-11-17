@@ -18,6 +18,7 @@
     "@sanity/client": "8.16.0",
     "@sanity/image-url": "~2.1.1",
     "astro": "~7.4.12",
+    "groq": "6.23.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "remixicon": "4.9.1",
