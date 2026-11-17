@@ -9,12 +9,15 @@ const tabs = [
 ]
 
 // Los paneles los renderiza Astro fuera de la isla; aquí se simulan en el documento.
-const mountPanels = () => {
+const mountPanels = (activeKey = 'about') => {
   document.body.insertAdjacentHTML(
     'beforeend',
-    `<div id="about" data-content class="filters__active"></div>
-     <div id="projects" data-content></div>
-     <div id="skills" data-content></div>`,
+    ['about', 'projects', 'skills']
+      .map(
+        (key) =>
+          `<div id="${key}" data-content${key === activeKey ? ' class="filters__active"' : ''}></div>`,
+      )
+      .join(''),
   )
 }
 const panel = (key: string) => document.getElementById(key)!
@@ -110,5 +113,29 @@ describe('Tabs', () => {
     fireEvent.click(screen.getByText('Sobre mí'))
     expect(panel('about')).not.toHaveClass('filters__fade')
     expect(vi.getTimerCount()).toBe(0)
+  })
+})
+
+// Al cambiar de idioma, applyActiveTab deja el panel correcto marcado en el documento
+// que entra y la isla se monta de cero en ese documento. Si confiara en defaultKey (el
+// valor del build) la pastilla quedaría en otra pestaña que el panel visible.
+describe('Tabs al montarse sobre un documento ya intercambiado', () => {
+  afterEach(() => {
+    document.querySelectorAll('[data-content]').forEach((el) => el.remove())
+  })
+
+  it('toma la pestaña activa del DOM, no de defaultKey', () => {
+    mountPanels('skills')
+    render(<Tabs tabs={tabs} defaultKey="about" />)
+
+    expect(screen.getByText('Aptitudes')).toHaveClass('filter-tab-active')
+    expect(screen.getByText('Sobre mí')).not.toHaveClass('filter-tab-active')
+  })
+
+  it('usa defaultKey cuando ningún panel está marcado', () => {
+    mountPanels('ninguno')
+    render(<Tabs tabs={tabs} defaultKey="about" />)
+
+    expect(screen.getByText('Sobre mí')).toHaveClass('filter-tab-active')
   })
 })
