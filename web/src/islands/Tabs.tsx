@@ -29,8 +29,10 @@ export default function Tabs({tabs, defaultKey}: Props) {
     const current = document.querySelector('.filters__active[data-content]')
 
     if (target === current) {
-      // Volver a la pestaña activa cancela un intercambio pendiente, si no la
-      // pastilla y el panel acabarian en pestañas distintas.
+      // DIFIERE DE assets/js/main.js a proposito. Alli el return anticipado ocurre antes
+      // de clearTimeout: clic en B y rapido en A deja la pastilla en A mientras el
+      // intercambio pendiente a B sigue disparando (pastilla y panel en desacuerdo). Aqui
+      // se cancela. Hay una prueba que lo fija; no "restaurar la paridad" quitandolo.
       clearTimeout(fade.current)
       target.classList.remove('filters__fade')
       return

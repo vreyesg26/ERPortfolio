@@ -32,6 +32,7 @@ if (!seo) throw new Error('Falta el documento seo en Sanity')
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
   </head>
   <body>
+    <!-- data-astro-rerun: el ClientRouter reemplaza el body al navegar y se llevaria la clase dark-theme. -->
     <script is:inline data-astro-rerun>
       try {
         if (localStorage.getItem('selected-theme') === 'dark') {
@@ -43,8 +44,10 @@ if (!seo) throw new Error('Falta el documento seo en Sanity')
     <script>
       import {initScrollReveal} from '../lib/scrollReveal'
 
-      // astro:page-load corre en la carga inicial y tras cada navegacion del ClientRouter.
-      document.addEventListener('astro:page-load', initScrollReveal)
+      // Solo en la carga inicial. Un script de modulo corre una vez, y el ClientRouter no lo
+      // repite al navegar: cambiar de idioma no reanima el perfil (el sitio actual no anima
+      // nada al cambiar de idioma). No usar astro:page-load, que si corre tras cada navegacion.
+      initScrollReveal()
     </script>
   </body>
 </html>

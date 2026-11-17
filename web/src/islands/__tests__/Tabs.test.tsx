@@ -77,6 +77,23 @@ describe('Tabs', () => {
     expect(vi.getTimerCount()).toBe(0)
   })
 
+  // Divergencia deliberada de main.js (alli la pastilla y el panel quedan en desacuerdo).
+  it('volver a la pestaña activa antes del intercambio lo cancela: pastilla y panel coinciden', () => {
+    fireEvent.click(screen.getByText('Proyectos'))
+    act(() => {
+      vi.advanceTimersByTime(100)
+    })
+    fireEvent.click(screen.getByText('Sobre mí'))
+    act(() => {
+      vi.advanceTimersByTime(500)
+    })
+    expect(screen.getByText('Sobre mí')).toHaveClass('filter-tab-active')
+    expect(panel('about')).toHaveClass('filters__active')
+    expect(panel('about')).not.toHaveClass('filters__fade')
+    expect(panel('projects')).not.toHaveClass('filters__active')
+    expect(vi.getTimerCount()).toBe(0)
+  })
+
   it('ignora el clic en la pestaña que ya está activa', () => {
     fireEvent.click(screen.getByText('Sobre mí'))
     expect(panel('about')).not.toHaveClass('filters__fade')

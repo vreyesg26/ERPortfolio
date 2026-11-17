@@ -23,6 +23,15 @@ const photo = imageUrl(profile.photo, 240)
   <div class="profile__actions">
     <LanguageToggle lang={lang} label={interfaceText.languageToggleLabel} />
     <ThemeToggle client:load />
+    <!-- Icono antes del primer pintado, como main.js: el boton ya existe aqui y el script
+         bloquea el parser. data-astro-rerun por el reemplazo del body del ClientRouter. -->
+    <script is:inline data-astro-rerun>
+      try {
+        if (localStorage.getItem('selected-icon') === 'ri-moon-line') {
+          document.getElementById('theme-button').classList.add('ri-sun-line')
+        }
+      } catch (e) {}
+    </script>
   </div>
 
   <div class="profile__container grid">
