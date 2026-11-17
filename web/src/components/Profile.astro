@@ -1,7 +1,9 @@
 ---
 import {imageAlt, imageUrl} from '../lib/image'
-import {otherLang, pathFor, type Lang} from '../lib/i18n'
+import ThemeToggle from '../islands/ThemeToggle'
+import type {Lang} from '../lib/i18n'
 import type {INTERFACE_TEXT_QUERY_RESULT, PROFILE_QUERY_RESULT} from '../sanity.types'
+import LanguageToggle from './LanguageToggle.astro'
 import ProfileButtons from './ProfileButtons.astro'
 import SocialLinks from './SocialLinks.astro'
 import Stats from './Stats.astro'
@@ -15,24 +17,12 @@ interface Props {
 const {lang, profile, interfaceText} = Astro.props
 // El CSS pinta la foto a 120 px: se pide al doble para pantallas retina.
 const photo = imageUrl(profile.photo, 240)
-const other = otherLang(lang)
-// Los controles de idioma y tema son marcado estático; la tarea 10 les da comportamiento.
 ---
 
 <header class="profile container">
   <div class="profile__actions">
-    <a
-      href={pathFor(other)}
-      class="change-language"
-      id="language-button"
-      aria-label={interfaceText.languageToggleLabel}
-      title={interfaceText.languageToggleLabel}
-    >
-      <i class="ri-global-line"></i>
-      <span id="language-code">{lang.toUpperCase()}</span>
-    </a>
-
-    <i class="ri-moon-line change-theme" id="theme-button"></i>
+    <LanguageToggle lang={lang} label={interfaceText.languageToggleLabel} />
+    <ThemeToggle client:load />
   </div>
 
   <div class="profile__container grid">

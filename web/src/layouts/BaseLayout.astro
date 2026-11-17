@@ -1,4 +1,5 @@
 ---
+import {ClientRouter} from 'astro:transitions'
 import Seo from '../components/Seo.astro'
 import type {Lang} from '../lib/i18n'
 import {SEO_QUERY} from '../lib/queries'
@@ -24,13 +25,14 @@ if (!seo) throw new Error('Falta el documento seo en Sanity')
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <Seo lang={lang} seo={seo} />
+    <ClientRouter />
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
   </head>
   <body>
-    <script is:inline>
+    <script is:inline data-astro-rerun>
       try {
         if (localStorage.getItem('selected-theme') === 'dark') {
           document.body.classList.add('dark-theme')
@@ -38,5 +40,11 @@ if (!seo) throw new Error('Falta el documento seo en Sanity')
       } catch (e) {}
     </script>
     <slot />
+    <script>
+      import {initScrollReveal} from '../lib/scrollReveal'
+
+      // astro:page-load corre en la carga inicial y tras cada navegacion del ClientRouter.
+      document.addEventListener('astro:page-load', initScrollReveal)
+    </script>
   </body>
 </html>
