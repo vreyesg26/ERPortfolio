@@ -9,7 +9,8 @@
   "scripts": {
     "dev": "sanity dev",
     "build": "sanity build",
-    "test": "vitest run"
+    "test": "vitest run",
+    "typegen": "sanity schemas extract --force --enforce-required-fields && sanity typegen generate"
   },
   "dependencies": {
     "@sanity/vision": "6.23.0",

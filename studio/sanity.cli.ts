@@ -5,4 +5,11 @@ export default defineCliConfig({
     projectId: 't0yrmwzx',
     dataset: 'production',
   },
+  typegen: {
+    enabled: true,
+    path: '../web/src/**/*.{ts,tsx}',
+    schema: 'schema.json',
+    generates: '../web/src/sanity.types.ts',
+    overloadClientMethods: true,
+  },
 })
