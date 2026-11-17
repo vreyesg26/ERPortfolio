@@ -25,12 +25,16 @@ describe('imageUrl', () => {
     const url = imageUrl(svg, 400)!
     expect(url).toMatch(/abc123-120x120\.svg$/)
     expect(url).not.toContain('?')
+    expect(url).not.toContain('fit=')
+    expect(url).not.toContain('w=')
   })
 
   it('aplica el ancho pedido y auto=format a los raster', () => {
     const url = imageUrl(raster, 400)!
     expect(url).toContain('w=400')
     expect(url).toContain('auto=format')
+    // fit=max: el ancho es un tope. Sin esto Sanity amplia imagenes menores (500px -> 600px).
+    expect(url).toContain('fit=max')
     expect(url).toContain(`/${SANITY_PROJECT_ID}/${SANITY_DATASET}/`)
   })
 })

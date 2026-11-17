@@ -15,7 +15,7 @@ import About from './About.astro'
 import Footer from './Footer.astro'
 import Profile from './Profile.astro'
 import ProjectGrid from './ProjectGrid.astro'
-import SkillCategory from './SkillCategory.astro'
+import SkillsPanel from './SkillsPanel.astro'
 
 interface Props {
   lang: Lang
@@ -66,17 +66,7 @@ const levels = {
           viewPlanLabel={interfaceText.viewPlanLabel}
           active={defaultKey === 'projects'}
         />
-        <div
-          class:list={['skills__content grid', {filters__active: defaultKey === 'skills'}]}
-          data-content
-          id="skills"
-        >
-          {
-            categories.map((category) => (
-              <SkillCategory category={category} skills={category.skills} levels={levels} />
-            ))
-          }
-        </div>
+        <SkillsPanel categories={categories} levels={levels} active={defaultKey === 'skills'} />
       </div>
     </section>
   </main>
