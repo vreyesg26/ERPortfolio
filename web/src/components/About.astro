@@ -1,0 +1,16 @@
+---
+import type {ABOUT_QUERY_RESULT} from '../sanity.types'
+
+interface Props {
+  about: NonNullable<ABOUT_QUERY_RESULT>
+  active: boolean
+}
+
+const {about, active} = Astro.props
+---
+
+<div class:list={['about__content grid', {filters__active: active}]} data-content id="about">
+  <div class="about__group">
+    {about.paragraphs.map((p) => <p class="about__description">{p.text}</p>)}
+  </div>
+</div>

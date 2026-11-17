@@ -1,0 +1,16 @@
+---
+import type {PROJECTS_QUERY_RESULT} from '../sanity.types'
+import ProjectCard from './ProjectCard.astro'
+
+interface Props {
+  projects: PROJECTS_QUERY_RESULT
+  viewPlanLabel: string
+  active: boolean
+}
+
+const {projects, viewPlanLabel, active} = Astro.props
+---
+
+<div class:list={['projects__content grid', {filters__active: active}]} data-content id="projects">
+  {projects.map((project) => <ProjectCard project={project} viewPlanLabel={viewPlanLabel} />)}
+</div>
