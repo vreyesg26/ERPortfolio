@@ -9,7 +9,7 @@ importers:
   studio:
     dependencies:
       '@sanity/vision':
-        specifier: ^6.23.0
+        specifier: 6.23.0
         version: 6.23.0(2975370583287d6b91b64fa4ecd3b49b)
       react:
         specifier: ^19.3.1
