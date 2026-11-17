@@ -20,7 +20,7 @@
     "groq": "6.23.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
-    "remixicon": "4.9.1",
+    "remixicon": "2.5.0",
     "sass": "^1.108.2",
     "scrollreveal": "4.0.9"
   },

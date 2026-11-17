@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import type {Lang} from '../lib/i18n'
+import {INTERFACE_TEXT_QUERY, PROFILE_QUERY} from '../lib/queries'
+import {client} from '../lib/sanity'
+import Profile from './Profile.astro'
+
+interface Props {
+  lang: Lang
+}
+
+const {lang} = Astro.props
+const profile = await client.fetch(PROFILE_QUERY, {lang})
+if (!profile) throw new Error('Falta el documento profile en Sanity')
+const interfaceText = await client.fetch(INTERFACE_TEXT_QUERY, {lang})
+if (!interfaceText) throw new Error('Falta el documento interfaceText en Sanity')
+---
+
+<BaseLayout lang={lang}>
+  <Profile lang={lang} profile={profile} interfaceText={interfaceText} />
+</BaseLayout>

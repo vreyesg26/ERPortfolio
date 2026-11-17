@@ -1,8 +1,7 @@
 ---
-import Profile from '../components/Profile.astro'
 import Seo from '../components/Seo.astro'
 import type {Lang} from '../lib/i18n'
-import {INTERFACE_TEXT_QUERY, PROFILE_QUERY, SEO_QUERY} from '../lib/queries'
+import {SEO_QUERY} from '../lib/queries'
 import {client} from '../lib/sanity'
 import 'remixicon/fonts/remixicon.css'
 import '../styles/styles.scss'
@@ -14,10 +13,6 @@ interface Props {
 const {lang} = Astro.props
 const seo = await client.fetch(SEO_QUERY, {lang})
 if (!seo) throw new Error('Falta el documento seo en Sanity')
-const profile = await client.fetch(PROFILE_QUERY, {lang})
-if (!profile) throw new Error('Falta el documento profile en Sanity')
-const interfaceText = await client.fetch(INTERFACE_TEXT_QUERY, {lang})
-if (!interfaceText) throw new Error('Falta el documento interfaceText en Sanity')
 ---
 
 <!doctype html>
@@ -42,7 +37,6 @@ if (!interfaceText) throw new Error('Falta el documento interfaceText en Sanity'
         }
       } catch (e) {}
     </script>
-    <Profile lang={lang} profile={profile} interfaceText={interfaceText} />
     <slot />
   </body>
 </html>

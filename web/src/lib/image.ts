@@ -1,4 +1,4 @@
-import imageUrlBuilder from '@sanity/image-url'
+import {createImageUrlBuilder} from '@sanity/image-url'
 import type {Project} from '../sanity.types'
 import {SANITY_DATASET, SANITY_PROJECT_ID} from './sanity-env'
 
@@ -8,7 +8,7 @@ export type SanityImageField =
   | null
   | undefined
 
-const builder = imageUrlBuilder({projectId: SANITY_PROJECT_ID, dataset: SANITY_DATASET})
+const builder = createImageUrlBuilder({projectId: SANITY_PROJECT_ID, dataset: SANITY_DATASET})
 
 // undefined (nunca "") cuando no hay asset: Astro y React omiten un atributo
 // undefined, mientras que <img src=""> hace que el navegador pida la página.
