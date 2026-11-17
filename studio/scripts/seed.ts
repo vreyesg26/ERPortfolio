@@ -1,6 +1,7 @@
 import {readFileSync} from 'node:fs'
 import {basename, resolve} from 'node:path'
 import {assetPaths, documents, type Doc} from './lib/content'
+import {draftWarning, findExisting, refusalMessage} from './lib/guard'
 import {config, mutate, query, REPO_ROOT, sanityFetch} from './lib/sanity-api'
 
 const DRY_RUN = process.argv.includes('--dry-run')
@@ -64,25 +65,18 @@ export const seedDocuments = async (assets: Map<string, string>): Promise<void> 
   console.log(`transaccion ${res.transactionId}: ${res.results.length} documentos escritos`)
 }
 
-// Los documentos que esta carga escribiria y que ya existen en el dataset
-// (publicados o como borrador).
-const findExisting = async (): Promise<string[]> => {
-  const ids = documents.flatMap((d: Doc) => [d._id, `drafts.${d._id}`])
-  const found: {_id: string}[] = await query('*[_id in $ids]{_id}', {ids})
-  return found.map((d) => d._id).sort()
-}
-
 const main = async () => {
-  if (!DRY_RUN && !FORCE) {
-    const existing = await findExisting()
-    if (existing.length > 0) {
-      console.error(
-        `El dataset ya contiene ${existing.length} de los documentos que esta carga escribiria:\n` +
-          existing.map((id) => `  - ${id}`).join('\n') +
-          '\n\nNo se escribio nada. Si alguien ya edito en el Studio, volver a sembrar borraria esos cambios.\n' +
-          'Para sobrescribir de todos modos, pasa --force (OJO: --force sobrescribe las ediciones hechas en el Studio).',
-      )
-      process.exit(2)
+  if (!DRY_RUN) {
+    const existing = await findExisting(
+      documents.map((d: Doc) => d._id),
+      query,
+    )
+    if (existing.published.length + existing.drafts.length > 0) {
+      if (!FORCE) {
+        console.error(refusalMessage(existing))
+        process.exit(2)
+      }
+      if (existing.drafts.length > 0) console.warn(draftWarning(existing))
     }
   }
   const assets = await seedAssets()

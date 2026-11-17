@@ -56,6 +56,10 @@ export const query = async <T = any>(
   const p = Object.entries(params)
     .map(([k, v]) => `&$${k}=${encodeURIComponent(JSON.stringify(v))}`)
     .join('')
-  const out = await sanityFetch(`/data/query/${dataset}?query=${encodeURIComponent(groq)}${p}`)
+  // perspective=raw explicito: los borradores (drafts.*) tienen que verse. No se
+  // confia en el valor por defecto de la version de la API.
+  const out = await sanityFetch(
+    `/data/query/${dataset}?perspective=raw&query=${encodeURIComponent(groq)}${p}`,
+  )
   return out.result as T
 }

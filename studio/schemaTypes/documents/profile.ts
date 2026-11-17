@@ -71,7 +71,8 @@ export const profile = defineType({
     defineField({
       name: 'whatsappPhone',
       title: 'Teléfono de WhatsApp',
-      description: 'Con código de país y sin signos ni espacios, por ejemplo "50499999999".',
+      description:
+        'Con código de país y sin el signo "+", sin espacios ni guiones, por ejemplo "50499999999". Es el formato que pide WhatsApp para los enlaces de contacto.',
       type: 'string',
       validation: (rule) => rule.required(),
     }),
