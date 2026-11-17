@@ -61,8 +61,8 @@ importers:
         specifier: ^19.3.1
         version: 19.3.1(react@19.3.1)
       remixicon:
-        specifier: 4.9.1
-        version: 4.9.1
+        specifier: 2.5.0
+        version: 2.5.0
       sass:
         specifier: ^1.108.2
         version: 1.108.2
@@ -4706,8 +4706,8 @@ packages:
   rematrix@0.3.0:
     resolution: {integrity: sha512-xB/9ZvJIKaDgXX0qkvV9/pLD8zK23A6TVV6F8Vhsl+SrxbBeVYutz5uszxgC6Rt3RP9LZiH8OXaYjr+x6WXWmQ==}
 
-  remixicon@4.9.1:
-    resolution: {integrity: sha512-36gLSoujkabnCFZFDyP17VNh9piuBA/rsXUb4auSJWLGsHVXtmxLj/EM5FjaEAGnk8oIAj1Azob/DZ2N+90lAQ==}
+  remixicon@2.5.0:
+    resolution: {integrity: sha512-q54ra2QutYDZpuSnFjmeagmEiN9IMo56/zz5dDNitzKD23oFRw77cWo4TsrAdmdkPiEn8mxlrTqxnkujDbEGww==}
 
   require-from-string@2.0.2:
     resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
@@ -10711,7 +10711,7 @@ snapshots:
 
   rematrix@0.3.0: {}
 
-  remixicon@4.9.1: {}
+  remixicon@2.5.0: {}
 
   require-from-string@2.0.2: {}
 
