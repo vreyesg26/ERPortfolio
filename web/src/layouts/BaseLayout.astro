@@ -1,0 +1,57 @@
+---
+import Seo from '../components/Seo.astro'
+import type {Lang} from '../lib/i18n'
+import type {SeoData} from '../lib/seo'
+import '../styles/styles.scss'
+
+interface Props {
+  lang: Lang
+  seo: SeoData
+}
+
+const {lang, seo} = Astro.props
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <Seo lang={lang} seo={seo} />
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+
+    <!-- Tema antes del primer pintado. El CSS cuelga de body.dark-theme y en <head> el
+         body aun no existe: se observa el documento y se aplica la clase en cuanto el
+         parser lo crea, antes de que se pinte nada. Mismas claves que el sitio actual. -->
+    <script is:inline>
+      (function () {
+        try {
+          if (localStorage.getItem('selected-theme') !== 'dark') return
+        } catch (e) {
+          return
+        }
+        var apply = function () {
+          if (!document.body) return false
+          document.body.classList.add('dark-theme')
+          return true
+        }
+        if (apply()) return
+        var observer = new MutationObserver(function () {
+          if (apply()) observer.disconnect()
+        })
+        observer.observe(document.documentElement, {childList: true})
+      })()
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

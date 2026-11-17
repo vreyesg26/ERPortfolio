@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import {client} from '../../lib/sanity'
+import {SEO_QUERY} from '../../lib/queries'
+import type {SeoData} from '../../lib/seo'
+
+const lang = 'en'
+const seo = (await client.fetch(SEO_QUERY, {lang})) as SeoData | null
+if (!seo) throw new Error('Falta el documento seo en Sanity')
+---
+
+<BaseLayout lang={lang} seo={seo} />
