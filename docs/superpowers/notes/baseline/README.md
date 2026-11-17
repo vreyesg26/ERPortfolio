@@ -12,16 +12,25 @@ Nombre: `<ancho>-<tema>-<pestaña>-<idioma>.png`. Página completa, viewport de 
 - 320 y 1280: temas `light` y `dark` x pestañas `about`, `projects`, `skills`, idioma `es`.
 - 320 y 1280: tema `light` x las tres pestañas, idioma `en`.
 
+## Versiones usadas
+
+Playwright 1.65.1, Chromium (headless shell) 159.0.8154.6. Otra versión del renderizador
+cambia la rasterización de fuentes y el antialiasing y mete ruido en todas las imágenes:
+instalar exactamente estas (`npm i playwright@1.65.1`).
+
 ## Cómo se regenera
 
-El script vive en `.superpowers/sdd/2026-11-17-astro-sanity-migration/capture.mjs` (scratch,
-fuera de git). Necesita Playwright instalado fuera del repo:
+El script `capture.mjs` está en esta misma carpeta. Playwright **no** va en el repo; se
+instala fuera de él:
 
 ```bash
-mkdir /tmp/pw && cd /tmp/pw && npm init -y && npm i playwright && npx playwright install chromium
-PLAYWRIGHT_DIR=/tmp/pw node .superpowers/sdd/2026-11-17-astro-sanity-migration/capture.mjs <urlBase> <dirSalida>
+mkdir /tmp/pw && cd /tmp/pw && npm init -y && npm i playwright@1.65.1 && npx playwright install chromium
+PLAYWRIGHT_DIR=/tmp/pw node docs/superpowers/notes/baseline/capture.mjs <urlBase> <dirSalida>
 ```
 
 El script fija `locale` en el contexto y siembra `localStorage` (`selected-theme`,
 `selected-icon`, `selected-language`) antes de cargar, recarga, hace clic en la pestaña
 (`.filters__button[data-target="#<pestaña>"]`) y espera 3,5 s a que termine ScrollReveal.
+
+Ojo: esos 3,5 s son una suposición de tiempo fija, no una condición determinista. Si la
+tarea 11 ve diferencias intermitentes, es lo primero que hay que sospechar.
