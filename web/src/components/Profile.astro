@@ -16,10 +16,10 @@ const {lang, profile, interfaceText} = Astro.props
 // El CSS pinta la foto a 120 px: se pide al doble para pantallas retina.
 const photo = imageUrl(profile.photo, 240)
 const other = otherLang(lang)
+// Los controles de idioma y tema son marcado estático; la tarea 10 les da comportamiento.
 ---
 
 <header class="profile container">
-  <!-- Marcado estático de los controles; la tarea 10 les da comportamiento. -->
   <div class="profile__actions">
     <a
       href={pathFor(other)}
