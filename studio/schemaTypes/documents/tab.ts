@@ -57,17 +57,17 @@ export const tab = defineType({
     defineField({
       name: 'isDefault',
       title: 'Pestaña que se abre al entrar',
-      description: 'Solo una pestaña puede estar marcada.',
+      description:
+        'Marca la pestaña que se abre primero al entrar a la página. Solo puede haber una marcada. Si no marcas ninguna, se abre la primera.',
       type: 'boolean',
       initialValue: false,
       validation: (rule) =>
         rule.custom(async (value, context) => {
+          if (!value) return true
           const others = await othersCount(context, 'isDefault == true', {})
-          const total = others + (value ? 1 : 0)
-          if (total === 1) return true
-          return total === 0
-            ? 'Marca una pestaña para que se abra al entrar.'
-            : 'Ya hay otra pestaña marcada para abrirse al entrar. Solo puede haber una.'
+          return others === 0
+            ? true
+            : 'Ya hay otra pestaña marcada para abrirse al entrar. Desmárcala primero.'
         }),
     }),
   ],

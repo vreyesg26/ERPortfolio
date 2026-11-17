@@ -5,7 +5,7 @@ export const SINGLETONS = ['profile', 'about', 'interfaceText', 'seo'] as const
 // Las tres pestañas existen siempre: se crean una vez y no se borran.
 export const PROTECTED_TYPES = [...SINGLETONS, 'tab'] as const
 
-const TITLES: Record<string, string> = {
+export const TITLES: Record<string, string> = {
   profile: 'Perfil',
   about: 'Sobre mí',
   seo: 'SEO y redes sociales',
@@ -16,10 +16,10 @@ const TITLES: Record<string, string> = {
   skill: 'Aptitudes',
 }
 
-const COLLECTIONS = ['tab', 'project', 'skillCategory', 'skill'] as const
+export const COLLECTIONS = ['tab', 'project', 'skillCategory', 'skill'] as const
 
 // Orden en que aparecen los documentos únicos, según la estructura del spec.
-const SINGLETON_MENU = ['profile', 'about', 'seo', 'interfaceText'] as const
+export const SINGLETON_MENU = ['profile', 'about', 'seo', 'interfaceText'] as const
 
 export const structure: StructureResolver = (S) =>
   S.list()

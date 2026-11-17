@@ -10,7 +10,7 @@ export const about = defineType({
       title: 'Párrafos',
       description: 'Cada párrafo en español e inglés. Arrastra para cambiar el orden o agrega uno nuevo.',
       type: 'array',
-      of: [defineArrayMember({type: 'localeText'})],
+      of: [defineArrayMember({type: 'localeText', validation: (rule) => rule.required()})],
       validation: (rule) => rule.required().min(1),
     }),
   ],

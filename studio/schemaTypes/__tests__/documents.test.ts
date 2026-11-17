@@ -1,6 +1,6 @@
 import {describe, expect, test} from 'vitest'
 import {schemaTypes} from '../index'
-import {SINGLETONS} from '../../structure'
+import {COLLECTIONS, SINGLETONS, SINGLETON_MENU, TITLES, structure} from '../../structure'
 import {profile} from '../documents/profile'
 import {about} from '../documents/about'
 import {interfaceText} from '../documents/interface-text'
@@ -255,11 +255,13 @@ describe('tab', () => {
     expect([seen.id, seen.draft].sort()).toEqual(['abc', 'drafts.abc'])
   })
 
-  test('exactamente un tab es isDefault', async () => {
+  test('como máximo un tab es isDefault: error solo al marcar true habiendo otro true', async () => {
     const check = customOf(field(tab, 'isDefault'))
     expect(await check(true, ctx([{key: 'about', isDefault: true}]))).not.toBe(true)
     expect(await check(true, ctx([{key: 'about'}]))).toBe(true)
-    expect(await check(false, ctx([{key: 'about'}]))).not.toBe(true)
+    // ninguno marcado es válido: el frontend cae al de menor order
+    expect(await check(false, ctx([{key: 'about'}]))).toBe(true)
+    expect(await check(undefined, ctx([{key: 'about'}]))).toBe(true)
     expect(await check(false, ctx([{key: 'about', isDefault: true}]))).toBe(true)
   })
 })
@@ -283,6 +285,8 @@ describe('protección contra borrado', () => {
         'discardChanges',
       ])
     }
+    // una acción sin campo `action` (de un plugin futuro) se conserva
+    expect(actions([...input, {}], {schemaType: 'tab'})).toHaveLength(3)
     for (const type of ['project', 'skill', 'skillCategory']) {
       expect(actions(input, {schemaType: type})).toHaveLength(5)
     }
@@ -325,8 +329,10 @@ describe('required() en el campo del documento, no solo dentro del objeto locali
     expect(isRequired(field(interfaceText, 'footerText'))).toBe(false)
   })
 
-  test('cada elemento de about.paragraphs es obligatorio (array con min 1)', () => {
+  test('about.paragraphs: el array pide min 1 y cada elemento es obligatorio', () => {
     expect(calls(field(about, 'paragraphs').validation)).toContainEqual({method: 'min', args: [1]})
+    const member = field(about, 'paragraphs').of?.[0] as FieldLike
+    expect(isRequired(member)).toBe(true)
   })
 
   test('todo localeString/localeText es obligatorio salvo project.alt e interfaceText.footerText', () => {
@@ -338,6 +344,69 @@ describe('required() en el campo del documento, no solo dentro del objeto locali
           (name === 'interfaceText' && f.name === 'footerText')
         expect(isRequired(f), `${name}.${f.name}`).toBe(!optional)
       }
+    }
+  })
+})
+
+describe('structure.ts', () => {
+  test('SINGLETON_MENU es una permutación de SINGLETONS', () => {
+    expect([...SINGLETON_MENU].sort()).toEqual([...SINGLETONS].sort())
+  })
+
+  test('SINGLETONS + COLLECTIONS cubren exactamente los tipos de documento del esquema', () => {
+    const docTypes = schemaTypes.filter((t) => t.type === 'document').map((t) => t.name)
+    expect([...SINGLETONS, ...COLLECTIONS].sort()).toEqual([...docTypes].sort())
+  })
+
+  test('TITLES repite el title de cada documento', () => {
+    for (const t of schemaTypes.filter((x) => x.type === 'document')) {
+      expect(TITLES[t.name], t.name).toBe(t.title)
+    }
+  })
+
+  test('el menú lista singletons, un divisor y las colecciones ordenadas por order', () => {
+    type Node = Record<string, unknown>
+    const builder = (kind: string, data: Node = {}): Node => {
+      const node: Node = {kind, ...data}
+      for (const m of ['title', 'id', 'schemaType', 'documentId', 'defaultOrdering', 'child']) {
+        node[m] = (v: unknown) => {
+          node[m + 'Value'] = v
+          return node
+        }
+      }
+      return node
+    }
+    let items: Node[] = []
+    const S = {
+      list: () => {
+        const l = builder('list')
+        l.items = (i: Node[]) => {
+          items = i
+          return l
+        }
+        return l
+      },
+      listItem: () => builder('listItem'),
+      document: () => builder('document'),
+      divider: () => ({kind: 'divider'}),
+      documentTypeListItem: (type: string) => builder('typeItem', {type}),
+      documentTypeList: (type: string) => builder('typeList', {type}),
+    }
+    ;(structure as unknown as (s: unknown) => unknown)(S)
+
+    const n = SINGLETON_MENU.length
+    expect(items.slice(0, n).map((i) => i.idValue)).toEqual([...SINGLETON_MENU])
+    for (const i of items.slice(0, n)) {
+      const doc = i.childValue as Node
+      expect(doc.documentIdValue).toBe(i.idValue)
+      expect(doc.schemaTypeValue).toBe(i.idValue)
+    }
+    expect(items[n]).toEqual({kind: 'divider'})
+    const cols = items.slice(n + 1)
+    expect(cols.map((i) => i.type)).toEqual([...COLLECTIONS])
+    for (const i of cols) {
+      const list = i.childValue as Node
+      expect(list.defaultOrderingValue).toEqual([{field: 'order', direction: 'asc'}])
     }
   })
 })

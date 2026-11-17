@@ -22,7 +22,7 @@ export default defineConfig({
     // Los documentos únicos y las pestañas no se duplican, borran ni despublican.
     actions: (input, {schemaType}) =>
       protectedTypes.has(schemaType)
-        ? input.filter(({action}) => action && !['delete', 'duplicate', 'unpublish'].includes(action))
+        ? input.filter(({action}) => !['delete', 'duplicate', 'unpublish'].includes(action ?? ''))
         : input,
   },
 })
