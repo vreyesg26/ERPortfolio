@@ -8,14 +8,14 @@ export const socialLink = defineType({
     defineField({
       name: 'name',
       title: 'Nombre',
-      description: 'Nombre de la red, por ejemplo "Instagram". Lo leen los lectores de pantalla.',
+      description: 'Nombre de la red, por ejemplo "Instagram". Sirve para que las personas con lector de pantalla sepan a qué red lleva el enlace.',
       type: 'string',
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'icon',
       title: 'Icono',
-      description: 'Clase de Remixicon, por ejemplo "ri-instagram-line".',
+      description: 'Nombre del icono. Búscalo en remixicon.com, haz clic en el icono que quieras y copia su nombre tal cual, por ejemplo "ri-instagram-line".',
       type: 'string',
       validation: (rule) => rule.required(),
     }),
