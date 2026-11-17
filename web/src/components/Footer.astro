@@ -3,13 +3,10 @@ interface Props {
   text?: string | null
 }
 
+// El span va siempre: vacío conserva el margen de .footer__copy, como en produccion.
 const text = Astro.props.text?.trim()
 ---
 
-{
-  text && (
-    <footer class="footer container">
-      <span class="footer__copy">{text}</span>
-    </footer>
-  )
-}
+<footer class="footer container">
+  <span class="footer__copy">{text}</span>
+</footer>

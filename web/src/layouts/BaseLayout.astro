@@ -13,6 +13,9 @@ interface Props {
 const {lang} = Astro.props
 const seo = await client.fetch(SEO_QUERY, {lang})
 if (!seo) throw new Error('Falta el documento seo en Sanity')
+// Tema antes del primer pintado: el parser se detiene en un script sin async, asi
+// que el script inline del body corre antes de que se pinte nada. Es lo que elimina
+// el parpadeo de tema claro al recargar en oscuro. Mismas claves que el sitio actual.
 ---
 
 <!doctype html>
@@ -27,9 +30,6 @@ if (!seo) throw new Error('Falta el documento seo en Sanity')
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
   </head>
   <body>
-    <!-- Tema antes del primer pintado: el parser se detiene en un script sin async, asi
-         que esto corre antes de que se pinte nada del body. Es lo que elimina el
-         parpadeo de tema claro al recargar en oscuro. Mismas claves que el sitio actual. -->
     <script is:inline>
       try {
         if (localStorage.getItem('selected-theme') === 'dark') {
