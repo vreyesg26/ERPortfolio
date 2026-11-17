@@ -318,9 +318,19 @@ Los favicons de `assets/img/favicon_io/` se mueven a `web/public/`.
 (lo pide Sanity), `typescript` ~5.9.3. Las mismas versiones que `Portfolio Admin`, para que
 el `sanity.types.ts` generado compile igual en los dos proyectos.
 
-`web/`: `astro` 7.4.x, `@astrojs/react` 7.1.x, `@sanity/astro` 4.0.0, `@sanity/client`
-8.16.0, `@sanity/image-url` 2.1.x, `sass`, `remixicon` 4.9.1, `scrollreveal` 4.0.9,
-`react` 19. Dev: `vitest`, `typescript`.
+`web/`: `astro` 7.4.x, `@astrojs/react` 7.1.x, `@sanity/client` 8.16.0, `groq` 6.23.0,
+`@sanity/image-url` 2.1.x, `sass`, `remixicon` 4.9.1, `scrollreveal` 4.0.9, `react` 19.
+Dev: `vitest`, `typescript`.
+
+**`@sanity/astro` se quitó el 2026-11-17**, tras la tarea 6. Estaba en esta lista por
+inercia: la capa de datos usa `@sanity/client` directamente, el Studio se despliega aparte en
+`*.sanity.studio` y el preview visual es un **no objetivo** de este spec. Se comprobó con
+evidencia —ningún archivo de `web/src` ni `astro.config.mjs` lo importa— en vez de quitarlo
+por corazonada. Además arrastraba como peers `@sanity/visual-editing-standalone`, `sanity`,
+`styled-components` y `react-is` dentro de `web`, que no pintan nada ahí.
+
+**`groq` se añadió** en su lugar: `defineQuery()` vive en ese paquete, no en
+`@sanity/client`. Es el mismo que usa el Portfolio Admin de Victor.
 
 **Remixicon pasa a ser un paquete de npm**, no el `<link>` a jsdelivr que hay hoy: una
 petición externa menos y los iconos dejan de depender de un CDN ajeno.
