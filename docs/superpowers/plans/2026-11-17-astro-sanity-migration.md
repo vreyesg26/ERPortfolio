@@ -287,6 +287,10 @@ it('profile.stats se valida a exactamente 3 elementos', () => { /* la grilla es 
 it('tab.key es una lista cerrada de about|projects|skills y es único', () => { /* ... */ })
 it('skill.category referencia skillCategory', () => { /* ... */ })
 it('SINGLETONS contiene los 4 tipos de documento único', () => { /* ... */ })
+it('los campos localeString/localeText obligatorios tienen required() en el campo mismo', () => {
+  /* no basta el required() de dentro del objeto: si el objeto entero falta,
+     las reglas de es/en no corren y el documento pasaría con un hueco */
+})
 ```
 
 - [ ] **Step 2: Correr el test y verificar que falla**
@@ -297,6 +301,20 @@ Run: `pnpm --filter studio exec vitest run schemaTypes/__tests__/documents.test.
 
 Siguiendo las tablas del spec campo por campo. `tab.key` con `options.list` cerrada y
 `validation` de unicidad.
+
+**Cada campo marcado "obligatorio" que sea `localeString` o `localeText` necesita su propio
+`required()` en el campo del documento, además del que esos objetos ya traen dentro.** Lo
+levantó el revisor de la tarea 3 y es un fallo silencioso: Sanity **no ejecuta la validación
+de los campos hijos cuando el objeto padre está ausente**, así que un `project` sin ningún
+`title` pasaría la validación —las reglas de `es` y `en` nunca llegan a correr— y la página
+se publicaría con un hueco. El `required()` de dentro solo protege contra "traducido a
+medias"; el de fuera protege contra "no existe".
+
+Esto aplica a: `profile.profession`, `profile.cvLabel`, `profile.whatsappMessage`,
+`about.paragraphs` (y cada elemento), los seis campos de `interfaceText` salvo `footerText`,
+`seo.title`, `seo.description`, `seo.keywords`, `seo.siteName`, `tab.label`,
+`project.title`, `skillCategory.title`. **No** a `project.alt` ni a
+`interfaceText.footerText`, que el spec marca opcionales.
 
 - [ ] **Step 4: Implementar `structure.ts` y conectar los singletons en `sanity.config.ts`**
 
@@ -309,10 +327,21 @@ sección en silencio).
 
 - [ ] **Step 5: Correr el test y verificar que pasa**
 
-- [ ] **Step 6: Desplegar el esquema y generar los tipos**
+- [ ] **Step 6: Generar los tipos**
+
+El `typegen` de Sanity son dos pasos encadenados en un script de `studio/package.json`:
+`sanity schemas extract --force --enforce-required-fields` escribe el esquema a un JSON, y
+`sanity typegen generate` lo convierte en TypeScript. El `generates` apunta a
+`../web/src/sanity.types.ts`.
 
 Run: `pnpm --filter studio typegen`
 Expected: `web/src/sanity.types.ts` existe y `pnpm --filter web exec tsc --noEmit` pasa.
+
+**El esquema NO se despliega a Sanity en esta tarea, y no hace falta que se despliegue por
+separado nunca.** `typegen` es enteramente local y no necesita autenticación. El esquema
+llega a Sanity dentro del Studio que la tarea 12 publica con `sanity deploy`; la fuente de
+verdad es el Studio local, que es la forma que Sanity recomienda. Si algún paso aquí pide
+credenciales, algo se entendió mal: parar y reportarlo.
 
 - [ ] **Step 7: Commit**
 
