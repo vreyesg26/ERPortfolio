@@ -52,6 +52,9 @@ Aplican a todas las tareas.
   tocarlos. `.gitattributes` se agrega **después** de borrarlos (tarea 13).
 - **El sitio en producción no puede caerse** hasta la tarea 12. Netlify sigue sirviendo el
   build actual mientras no exista `netlify.toml` en `main`.
+- **Los dos paquetes typechequean.** `pnpm --filter studio exec tsc --noEmit` y
+  `pnpm --filter web exec tsc --noEmit` deben pasar los dos. Durante las tareas 3 a 5 solo
+  se corría el de `web`, y `studio` acumuló errores sin que nadie los viera.
 - **Node >= 22.23.4**, que es el piso que declara Astro 7.4.12 (`sanity` solo pide >=22.12).
   El Node por defecto de la máquina de Victor es 22.13.1 y **no alcanza**; hay un Homebrew
   26.8.1 que sí. Los dos `package.json` declaran `"engines": {"node": ">=22.23.4"}` para que
@@ -761,8 +764,12 @@ diferencia encontrada, con la captura de antes y la de después.
 
 - [ ] **Step 2: Correr la suite completa y el typecheck**
 
-Run: `pnpm --filter studio test && pnpm --filter web test && pnpm --filter web exec tsc --noEmit && pnpm --filter web build`
-Expected: todo verde.
+Run: `pnpm --filter studio test && pnpm --filter web test && pnpm --filter studio exec tsc --noEmit && pnpm --filter web exec tsc --noEmit && pnpm --filter web build`
+Expected: todo verde, **los dos typechecks incluidos**.
+
+El de `studio` no estaba en esta compuerta hasta el 2026-11-17 y por eso pasaron
+inadvertidos tres tareas de errores de tipo, incluido un método de validación que
+TypeScript no declara. Los dos paquetes se typechequean.
 
 - [ ] **Step 3: Pedir a Victor que apruebe el deploy preview**
 
