@@ -32,6 +32,13 @@ describe('imageUrl', () => {
   })
 })
 
+describe('imageUrl, ancho obligatorio', () => {
+  it('el tipo exige el ancho: omitirlo no compila', () => {
+    // @ts-expect-error width es obligatorio; si deja de serlo, tsc falla aquí
+    imageUrl(raster)
+  })
+})
+
 describe('imageAlt', () => {
   it('cae al fallback cuando alt está vacío', () => {
     expect(imageAlt({_type: 'image', alt: ''}, 'Foto')).toBe('Foto')

@@ -12,14 +12,14 @@ const builder = imageUrlBuilder({projectId: SANITY_PROJECT_ID, dataset: SANITY_D
 
 // undefined (nunca "") cuando no hay asset: Astro y React omiten un atributo
 // undefined, mientras que <img src=""> hace que el navegador pida la página.
-// Todo llamador pasa un ancho explícito: sin él cada raster se sirve a tamaño original.
-export function imageUrl(image: SanityImageField, width?: number): string | undefined {
+// El ancho es obligatorio: omitirlo sirve cada raster a tamaño original (el defecto de la migración anterior). En SVG se ignora.
+export function imageUrl(image: SanityImageField, width: number): string | undefined {
   const ref = image?.asset?._ref
   if (!image || !ref) return undefined
   const source = builder.image(image)
   // La canalización de imágenes de Sanity no transforma SVG: se sirven tal cual.
   if (ref.endsWith('-svg')) return source.url()
-  const sized = width ? source.width(width) : source
+  const sized = source.width(width)
   return sized.auto('format').url()
 }
 
