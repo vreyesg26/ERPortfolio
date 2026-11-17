@@ -289,6 +289,21 @@ describe('protección contra borrado', () => {
   })
 })
 
+describe('plantillas de "Nuevo documento"', () => {
+  test('se ocultan los singletons y tab, y solo esos', async () => {
+    const {default: config} = await import('../../sanity.config')
+    const templates = (
+      config as unknown as {
+        schema: {templates: (t: {schemaType: string}[]) => {schemaType: string}[]}
+      }
+    ).schema.templates
+    const all = [...SINGLETONS, 'tab', 'project', 'skill', 'skillCategory'].map((schemaType) => ({
+      schemaType,
+    }))
+    expect(templates(all).map((t) => t.schemaType)).toEqual(['project', 'skill', 'skillCategory'])
+  })
+})
+
 describe('required() en el campo del documento, no solo dentro del objeto localizado', () => {
   const must: Record<string, [unknown, string[]]> = {
     profile: [profile, ['profession', 'cvLabel', 'whatsappMessage']],
