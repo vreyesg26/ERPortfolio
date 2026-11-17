@@ -52,6 +52,14 @@ Aplican a todas las tareas.
   tocarlos. `.gitattributes` se agrega **después** de borrarlos (tarea 13).
 - **El sitio en producción no puede caerse** hasta la tarea 12. Netlify sigue sirviendo el
   build actual mientras no exista `netlify.toml` en `main`.
+- **Node >= 22.23.4**, que es el piso que declara Astro 7.4.12 (`sanity` solo pide >=22.12).
+  El Node por defecto de la máquina de Victor es 22.13.1 y **no alcanza**; hay un Homebrew
+  26.8.1 que sí. Los dos `package.json` declaran `"engines": {"node": ">=22.23.4"}` para que
+  el fallo sea un mensaje claro y no un error raro a mitad del build. En Netlify la versión
+  se fija explícitamente en `netlify.toml` (tarea 12): el sitio `ingefrenreyes` existe desde
+  antes de que Netlify cambiara su default a Node 24 en julio de 2026, y **los sitios
+  existentes conservan el pin viejo**, así que sin fijarla el build del cutover correría con
+  un Node demasiado antiguo.
 
 ## Review Focus
 
@@ -185,7 +193,7 @@ de ejemplo; `.env.local` lleva los reales y queda fuera de git por la regla del 
 
 - [ ] **Step 5: Verificar que las dos cadenas de build arrancan**
 
-Run: `pnpm install && pnpm --filter web astro --version && pnpm --filter studio sanity --version`
+Run: `pnpm install && pnpm --filter web exec astro --version && pnpm --filter studio exec sanity --version`
 Expected: las dos imprimen su versión sin error.
 
 - [ ] **Step 6: Commit**
@@ -229,7 +237,7 @@ describe('socialLink', () => {
 
 - [ ] **Step 2: Correr el test y verificar que falla**
 
-Run: `pnpm --filter studio vitest run schemaTypes/__tests__/objects.test.ts`
+Run: `pnpm --filter studio exec vitest run schemaTypes/__tests__/objects.test.ts`
 Expected: FAIL, los módulos no existen.
 
 - [ ] **Step 3: Implementar los cuatro objetos**
@@ -283,7 +291,7 @@ it('SINGLETONS contiene los 4 tipos de documento único', () => { /* ... */ })
 
 - [ ] **Step 2: Correr el test y verificar que falla**
 
-Run: `pnpm --filter studio vitest run schemaTypes/__tests__/documents.test.ts`
+Run: `pnpm --filter studio exec vitest run schemaTypes/__tests__/documents.test.ts`
 
 - [ ] **Step 3: Implementar los ocho documentos**
 
@@ -304,7 +312,7 @@ sección en silencio).
 - [ ] **Step 6: Desplegar el esquema y generar los tipos**
 
 Run: `pnpm --filter studio typegen`
-Expected: `web/src/sanity.types.ts` existe y `pnpm --filter web tsc --noEmit` pasa.
+Expected: `web/src/sanity.types.ts` existe y `pnpm --filter web exec tsc --noEmit` pasa.
 
 - [ ] **Step 7: Commit**
 
@@ -347,7 +355,7 @@ existen en el original: sus valores exactos están en el spec y el test los fija
 
 - [ ] **Step 2: Correr el test y verificar que falla**
 
-Run: `pnpm --filter studio vitest run scripts/lib/__tests__/content.test.ts`
+Run: `pnpm --filter studio exec vitest run scripts/lib/__tests__/content.test.ts`
 
 - [ ] **Step 3: Escribir `content.ts` transcribiendo el contenido actual**
 
@@ -367,7 +375,7 @@ las rutas mapeadas a `_id` de asset; `seedDocuments(assets): Promise<void>` hace
 
 - [ ] **Step 6: Ensayo en seco y luego la corrida real**
 
-Run: `pnpm --filter studio tsx scripts/seed.ts --dry-run` y después sin la bandera.
+Run: `pnpm --filter studio exec tsx scripts/seed.ts --dry-run` y después sin la bandera.
 Expected: el ensayo imprime 14 assets y 29 documentos sin escribir nada.
 
 - [ ] **Step 7: Implementar y correr `verify.ts`**
@@ -378,7 +386,7 @@ que las 9 aptitudes apunten a una categoría existente; que exactamente una pest
 `isDefault`; y que los `order` de cada colección **no tengan repetidos**.
 
 **Además valida los 29 documentos contra el esquema desplegado**, con
-`pnpm --filter studio sanity documents validate --dataset production`. Sanity no rechaza
+`pnpm --filter studio exec sanity documents validate --dataset production`. Sanity no rechaza
 campos desconocidos al crear, así que un nombre de campo mal escrito en `content.ts`
 guardaría un campo que el frontend nunca lee y dejaría el obligatorio ausente, en silencio.
 Los recuentos solos no lo cazan.
@@ -456,7 +464,7 @@ it('ogLocale devuelve es_ES y en_US', () => { /* ... */ })
 
 - [ ] **Step 2: Correr los tests y verificar que fallan**
 
-Run: `pnpm --filter web vitest run src/lib`
+Run: `pnpm --filter web exec vitest run src/lib`
 
 - [ ] **Step 3: Implementar los cinco módulos**
 
@@ -653,7 +661,7 @@ it('ignora el clic en la pestaña que ya está activa', () => { /* ... */ })
 
 - [ ] **Step 2: Correr el test y verificar que falla**
 
-Run: `pnpm --filter web vitest run src/islands`
+Run: `pnpm --filter web exec vitest run src/islands`
 
 - [ ] **Step 3: Implementar `Tabs.tsx`**
 
@@ -708,7 +716,7 @@ diferencia encontrada, con la captura de antes y la de después.
 
 - [ ] **Step 2: Correr la suite completa y el typecheck**
 
-Run: `pnpm --filter studio vitest run && pnpm --filter web vitest run && pnpm --filter web tsc --noEmit && pnpm --filter web build`
+Run: `pnpm --filter studio test && pnpm --filter web test && pnpm --filter web exec tsc --noEmit && pnpm --filter web build`
 Expected: todo verde.
 
 - [ ] **Step 3: Pedir a Victor que apruebe el deploy preview**
@@ -729,6 +737,13 @@ configuración que producción), pero no hay paso intermedio de seguridad.
 - [ ] **Step 1: Crear `netlify.toml`**
 
 Build command `pnpm install && pnpm --filter web build`, publish `web/dist`.
+
+**Y `NODE_VERSION = "24"` en `[build.environment]`.** No es opcional: `ingefrenreyes` se
+creó antes de que Netlify pasara su default a Node 24 (julio de 2026) y los sitios
+existentes conservan la versión a la que quedaron fijados, que está por debajo del piso de
+Astro. 24 es el default actual de Netlify para sitios nuevos, así que es la versión mejor
+soportada de las que superan ese piso. Si el deploy preview del paso 3 falla por la versión
+de Node, este es el primer sitio donde mirar.
 
 - [ ] **Step 2: [Controlador] Fijar las variables de entorno en Netlify**
 
@@ -768,7 +783,7 @@ Solo después de que la tarea 12 confirmara que producción vive sin los archivo
 
 - [ ] **Step 1: Respaldar el dataset**
 
-Run: `pnpm --filter studio sanity dataset export production ~/Backups/portafolio-efren-<fecha>.tar.gz`
+Run: `pnpm --filter studio exec sanity dataset export production ~/Backups/portafolio-efren-<fecha>.tar.gz`
 
 El dataset es ahora la única copia del contenido. Esta es la recomendación que quedó sin
 aplicar en la migración anterior.
