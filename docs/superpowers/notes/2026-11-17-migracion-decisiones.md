@@ -63,8 +63,8 @@ las 11 fichas de proyecto, la foto, los planos y los dos CV en PDF viven en el d
   (appId fijado en `studio/sanity.cli.ts`). Hace falta `npx sanity login`.
 - **Node.** Astro 7 exige Node >= 22.23.4 en tiempo de ejecución (con `engine-strict`
   apagado, pnpm solo avisa). Netlify usa Node 24 (`netlify.toml`).
-- **`@sanity/astro` no se usa** aunque el spec lo listaba; se retiró en la tarea 8 por no
-  aportar nada y por YAGNI.
+- **`@sanity/astro` no se usa** aunque el spec lo listaba; se retiró por no aportar
+  nada (YAGNI, con evidencia).
 - **`site.webmanifest` conserva `name`/`short_name` vacíos**: es exactamente lo que hacía el
   original. Rellenarlos es una decisión de contenido, no de migración.
 - **Esquema más estricto que Strapi**, a propósito: todos los `order` son obligatorios y
@@ -95,8 +95,8 @@ las 11 fichas de proyecto, la foto, los planos y los dos CV en PDF viven en el d
   `~/Backups/` cerraría el hueco; hoy solo existe la copia del cutover.
 - **Credenciales por revocar:** el `readToken` que devolvió `create_project` (no se
   persistió) y el token de escritura de `studio/.env.local`, que solo servía a la migración.
-- **Anchos de `imageUrl` explícitos**: dos de las llamadas pasan ancho; `og:image` se sirve a
-  512 de ancho real. Una `meta` anuncia un tamaño a un crawler, así que ahí no debe
+- **`og:image` se sirve a 512 px de ancho real** (el original de la foto). Un `<img>` puede
+  pedir un ancho como tope, pero una `meta` anuncia un tamaño a un crawler: ahí no debe
   prometerse más de lo que se entrega.
 - **`hotspot: true` es inerte** si las queries siguen proyectando solo
   `asset->{_id,url,mimeType}`: el recorte nunca llega a la URL.
@@ -107,7 +107,7 @@ las 11 fichas de proyecto, la foto, los planos y los dos CV en PDF viven en el d
 Triados y no corregidos de forma deliberada. Ninguno bloquea nada. Los de las tareas 5 y 6
 se refieren a código que ya no existe (siembra) o a las queries de `web`.
 
-### Tareas 5 (siembra, ya borrada)
+### Tarea 5 (siembra, ya borrada)
 
 - **T5** — los strings de SEO en español se comprobaban con `toContain`, no anclados a
   `name="description" content="…"`.
