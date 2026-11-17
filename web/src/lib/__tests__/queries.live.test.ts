@@ -33,17 +33,74 @@ describe('queries contra el dataset real', () => {
       expect(r).not.toBeNull()
       expect(Array.isArray(r) ? r.length : Object.keys(r!).length).toBeGreaterThan(0)
     }
-    const [profile, about, ui, seo, tabs] = results as any[]
-    expect(typeof profile.name).toBe('string')
-    expect(typeof profile.profession).toBe('string')
+    const [profile, about, ui, seo, tabs, projects, skills] = results as any[]
+    const str = (v: unknown) => expect(typeof v).toBe('string')
+    const filled = (v: unknown) => expect(v).toBeTruthy()
+    // Un campo mal escrito se proyecta como null sin error: se asierta cada uno que otra tarea lee.
+    str(profile.name)
+    str(profile.profession)
+    str(profile.cvLabel)
     expect(profile.cvUrl).toMatch(/^https:\/\/cdn\.sanity\.io\/files\//)
     expect(profile.stats).toHaveLength(3)
-    expect(typeof profile.stats[0].label).toBe('string')
-    expect(typeof about.paragraphs[0].text).toBe('string')
-    expect(typeof ui.levelBasic).toBe('string')
-    expect(typeof seo.title).toBe('string')
+    for (const st of profile.stats) {
+      str(st._key)
+      str(st.value)
+      str(st.label)
+    }
+    expect(profile.socialLinks.length).toBeGreaterThan(0)
+    for (const l of profile.socialLinks) {
+      str(l._key)
+      str(l.name)
+      str(l.icon)
+      str(l.url)
+    }
+    filled(profile.whatsappPhone)
+    str(profile.whatsappPhone)
+    str(profile.whatsappMessage)
+    str(profile.messengerUrl)
+    expect(about.paragraphs.length).toBeGreaterThan(0)
+    for (const para of about.paragraphs) {
+      str(para._key)
+      filled(para.text)
+    }
+    for (const k of [
+      'levelBasic',
+      'levelIntermediate',
+      'levelAdvanced',
+      'languageToggleLabel',
+      'viewPlanLabel',
+    ]) {
+      filled(ui[k])
+      str(ui[k])
+    }
+    // footerText es opcional y el dataset no lo trae: no se asierta.
+    for (const k of ['title', 'description', 'keywords', 'author', 'siteName', 'siteUrl', 'themeColor']) {
+      filled(seo[k])
+      str(seo[k])
+    }
+    expect(seo.ogImage.asset._ref).toMatch(/^image-/)
     expect(tabs).toHaveLength(3)
-    expect(typeof tabs[0].label).toBe('string')
+    for (const tab of tabs) {
+      str(tab._id)
+      str(tab.label)
+      expect(['about', 'projects', 'skills']).toContain(tab.key)
+      expect(typeof tab.order).toBe('number')
+      expect(typeof tab.isDefault).toBe('boolean')
+    }
+    for (const pr of projects) {
+      str(pr._id)
+      filled(pr.title)
+      expect(pr.driveUrl).toMatch(/^https?:\/\//)
+    }
+    for (const cat of skills) {
+      str(cat._id)
+      filled(cat.title)
+      for (const sk of cat.skills) {
+        str(sk._id)
+        filled(sk.name)
+        expect(['basic', 'intermediate', 'advanced']).toContain(sk.level)
+      }
+    }
   })
 
   it('PROJECTS_QUERY con $lang "es" y "en" devuelve 11 proyectos con títulos distintos', async () => {

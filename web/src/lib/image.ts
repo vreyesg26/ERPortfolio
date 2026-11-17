@@ -1,6 +1,6 @@
 import imageUrlBuilder from '@sanity/image-url'
 import type {Project} from '../sanity.types'
-import {SANITY_DATASET, SANITY_PROJECT_ID} from './sanity'
+import {SANITY_DATASET, SANITY_PROJECT_ID} from './sanity-env'
 
 // El tipo del campo viene de sanity.types.ts; alt solo existe en la foto de perfil.
 export type SanityImageField =
