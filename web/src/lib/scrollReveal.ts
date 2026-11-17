@@ -20,7 +20,13 @@ export const revealTargets = [
   {selector: '.filters', delay: 1000},
 ] as const
 
+// El reveal es solo de la carga inicial; el guard lo hace cierto por construccion, aunque un
+// futuro data-astro-rerun o astro:page-load vuelva a llamar a esta funcion.
+let initialised = false
+
 export function initScrollReveal() {
+  if (initialised) return
+  initialised = true
   const sr = ScrollReveal(baseConfig)
   for (const {selector, ...options} of revealTargets) sr.reveal(selector, options)
 }

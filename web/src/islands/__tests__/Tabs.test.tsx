@@ -63,13 +63,25 @@ describe('Tabs', () => {
   })
 
   it('clics rápidos no encolan intercambios', () => {
+    // t0: el primer clic agenda un intercambio a Proyectos para t200.
     fireEvent.click(screen.getByText('Proyectos'))
     act(() => {
       vi.advanceTimersByTime(100)
     })
+    // t100: el segundo clic debe cancelarlo y agendar el suyo para t300.
     fireEvent.click(screen.getByText('Aptitudes'))
+    expect(vi.getTimerCount()).toBe(1)
+
+    // Justo despues del plazo original del primero (t201): sin cancelacion, Proyectos
+    // aparecería aquí un instante. Es el estado intermedio que el final no deja ver.
     act(() => {
-      vi.advanceTimersByTime(200)
+      vi.advanceTimersByTime(101)
+    })
+    expect(panel('projects')).not.toHaveClass('filters__active')
+    expect(panel('about')).toHaveClass('filters__active')
+
+    act(() => {
+      vi.advanceTimersByTime(99)
     })
     expect(panel('skills')).toHaveClass('filters__active')
     expect(panel('projects')).not.toHaveClass('filters__active')
