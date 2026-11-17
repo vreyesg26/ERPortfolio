@@ -95,9 +95,12 @@ Contra `https://ingefrenreyes.netlify.app/`, **sin** haber tocado nada. Anchos: 
 y los dos temas en 320 y en 1280. Guardar como
 `docs/superpowers/notes/baseline/<ancho>-<tema>-<pestaña>-<idioma>.png`.
 
-- [ ] **Step 2: Instalar `sass` y comprobar que el SCSS actual NO reproduce el CSS**
+- [ ] **Step 2: Comprobar que el SCSS actual NO reproduce el CSS**
 
-Run: `pnpm add -D sass -w && pnpm sass assets/scss/styles.scss /tmp/baseline.css --no-source-map && diff <(npx prettier --parser css /tmp/baseline.css) <(npx prettier --parser css assets/css/styles.css)`
+**Sin instalar nada en el repo:** el workspace de pnpm lo crea la tarea 2, y esta tarea
+corre antes a propósito. Usar `npx`.
+
+Run: `npx sass@1 assets/scss/styles.scss /tmp/baseline.css --no-source-map && diff <(npx prettier@3 --parser css /tmp/baseline.css) <(npx prettier@3 --parser css assets/css/styles.css)`
 Expected: diferencias en las cinco reglas de la tabla "La deriva del CSS" del spec.
 
 - [ ] **Step 3: Aplicar las cinco reglas al SCSS**
@@ -159,7 +162,8 @@ las Global Constraints, `@astrojs/react` y Sass.
 
 - `studio/`: `vitest` (tareas 3, 4 y 5) y `tsx` (para correr `seed.ts` y `verify.ts`).
 - `web/`: `vitest`, `jsdom`, `@testing-library/react` y `@testing-library/jest-dom`
-  (el test de `Tabs` en la tarea 10).
+  (el test de `Tabs` en la tarea 10), `sass`, y **`groq-js`** (evalúa GROQ localmente contra
+  documentos en memoria: es lo que hace viables los fixtures de la tarea 6).
 
 - [ ] **Step 4: Crear `web/.env.example` y `web/.env.local`**
 
@@ -360,7 +364,14 @@ Consulta el dataset y comprueba: los recuentos del spec; que ningún `localeStri
 `localeText` tenga un idioma vacío; que las 12 referencias de imagen y los 2 PDF resuelvan;
 que las 9 aptitudes apunten a una categoría existente; que exactamente una pestaña tenga
 `isDefault`; y que los `order` de cada colección **no tengan repetidos**.
-Expected: sale con código 0 y sin incidencias.
+
+**Además valida los 29 documentos contra el esquema desplegado**, con
+`pnpm --filter studio sanity documents validate --dataset production`. Sanity no rechaza
+campos desconocidos al crear, así que un nombre de campo mal escrito en `content.ts`
+guardaría un campo que el frontend nunca lee y dejaría el obligatorio ausente, en silencio.
+Los recuentos solos no lo cazan.
+
+Expected: sale con código 0, sin incidencias y sin errores de validación.
 
 - [ ] **Step 8: Commit**
 
@@ -377,7 +388,8 @@ se puede probar sin navegador.
 
 **Files:**
 - Create: `web/src/lib/sanity.ts`, `queries.ts`, `image.ts`, `i18n.ts`, `content.ts`
-- Test: `web/src/lib/__tests__/{queries,image,i18n,content}.test.ts`
+- Test: `web/src/lib/__tests__/{image,i18n,content,queries}.test.ts`,
+  `queries.live.test.ts`, `queries.fixtures.test.ts`
 
 **Interfaces:**
 - Consumes: `web/src/sanity.types.ts` de la tarea 4; el dataset sembrado en la tarea 5.
@@ -401,12 +413,22 @@ it('sirve los SVG tal cual, sin parámetros de transformación', () => { /* ... 
 it('aplica el ancho pedido y auto=format a los raster', () => { /* ... */ })
 it('imageAlt cae al fallback cuando alt está vacío', () => { /* ... */ })
 
-// queries.test.ts  — Review Focus 1 y 3
-it('cada query proyecta con coalesce(campo[$lang], campo.es)', () => { /* falta traducción */ })
+// queries.live.test.ts — CONTRA EL DATASET REAL que sembró la tarea 5.
+// No son aserciones de subcadena sobre el texto de la query: eso dejaría pasar un _type
+// mal escrito, un [0] perdido o un references() invertido, que es la debilidad que la
+// migración anterior documentó. Estos ejecutan y asertan sobre los datos devueltos.
+it('las 7 queries devuelven datos, no null ni []', () => { /* caza _type y campos inexistentes */ })
+it('PROJECTS_QUERY con $lang "es" y "en" devuelve 11 proyectos con títulos distintos', () => { /* ... */ })
+it('SKILLS_QUERY devuelve 2 categorías con 5 y 4 aptitudes', () => { /* la referencia resuelve */ })
+it('las imágenes vuelven como objeto completo, no como asset->{_id,url}', () => { /* hotspot */ })
+
+// queries.fixtures.test.ts — con groq-js, para los casos que el dataset real NO contiene
+it('cae a español cuando falta la traducción en inglés', () => { /* Review Focus 1 */ })
 it('project.alt cae a alt[$lang], luego title[$lang], luego title.es', () => { /* ... */ })
-it('las 4 colecciones ordenan por order y desempatan por _id', () => { /* order repetido */ })
-it('SKILLS_QUERY descarta las aptitudes cuya referencia de categoría no resuelve', () => { /* ... */ })
-it('las imágenes se proyectan completas, no como asset->{_id,url}', () => { /* hotspot */ })
+it('el orden es determinista con dos documentos de igual order', () => { /* Review Focus 3 */ })
+it('SKILLS_QUERY descarta la aptitud cuya referencia de categoría no resuelve', () => { /* Review Focus 5 */ })
+
+// queries.test.ts
 it('cada defineQuery tiene un nombre único en todo el proyecto', () => { /* typegen */ })
 
 // content.test.ts  — Review Focus 4 y 5
@@ -465,33 +487,44 @@ Copiar `assets/scss/**` a `web/src/styles/` conservando la estructura de parcial
 `@import` de Sass está deprecado: pasar a `@use`/`@forward`. Importar el SCSS **una vez** en
 `BaseLayout.astro`, global.
 
-- [ ] **Step 2: Implementar `Seo.astro`**
+Los archivos de `web/src/styles/` son **nuevos**, así que van en LF. No reescribir los
+originales de `assets/scss/`, que están en CRLF y se borran en la tarea 13.
+
+- [ ] **Step 2: Mover los favicons a `web/public/`**
+
+`assets/img/favicon.ico` y los seis archivos de `assets/img/favicon_io/`
+(`favicon-16x16.png`, `favicon-32x32.png`, `apple-touch-icon.png`,
+`android-chrome-192x192.png`, `android-chrome-512x512.png`, `site.webmanifest`).
+`BaseLayout.astro` los referencia desde la raíz del sitio, con las mismas etiquetas `<link>`
+que tiene `index.html` hoy. Los originales se borran en la tarea 13.
+
+- [ ] **Step 3: Implementar `Seo.astro`**
 
 Emite `<title>`, `description`, `keywords`, `author`, `theme-color`, los siete `og:*` y los
 cinco `twitter:*` del inventario del spec, más el `canonical` y los tres
 `<link rel="alternate" hreflang="es|en|x-default">`. `og:locale` sale de `ogLocale(lang)`,
 no de un campo.
 
-- [ ] **Step 3: Implementar `BaseLayout.astro` con el script de tema inline**
+- [ ] **Step 4: Implementar `BaseLayout.astro` con el script de tema inline**
 
 Un `<script is:inline>` en `<head>` que lea `localStorage` y aplique `dark-theme` al `body`
 **antes del primer pintado**: eso elimina el parpadeo de tema claro que el sitio tiene hoy
 al recargar en oscuro.
 
-- [ ] **Step 4: Implementar las dos páginas**
+- [ ] **Step 5: Implementar las dos páginas**
 
 Cada una pide sus datos con `$lang` y pasa `lang` al layout. `web/src/pages/index.astro` es
 español; `web/src/pages/en/index.astro`, inglés. De momento solo renderizan el `<head>` y
 un `<body>` vacío.
 
-- [ ] **Step 5: Verificar que las dos rutas construyen con el contenido real**
+- [ ] **Step 6: Verificar que las dos rutas construyen con el contenido real**
 
 Run: `pnpm --filter web build && grep -c 'hreflang' dist/index.html dist/en/index.html`
 Expected: el build pasa y las dos páginas tienen 3 `hreflang` cada una. Comprobar a mano
 que el `<title>` de `dist/index.html` está en español y el de `dist/en/index.html` en
 inglés.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
 git add -A && git commit -m "feat: layout, SEO por idioma y las rutas / y /en"
@@ -730,9 +763,10 @@ aplicar en la migración anterior.
 
 - [ ] **Step 2: Borrar los archivos del sitio viejo**
 
-`index.html`, `assets/js/`, `assets/css/`, `assets/scss/`, `assets/img/plans/`,
-`assets/img/profile.webp`, `assets/pdf/`. Los favicons ya se movieron a `web/public/` en la
-tarea 7.
+`index.html` y **todo** `assets/`: `js/`, `css/`, `scss/`, `img/plans/`,
+`img/profile.webp`, `pdf/`, **`img/favicon.ico` e `img/favicon_io/`**. Los favicons ya se
+copiaron a `web/public/` en el paso 2 de la tarea 7; si no se borran aquí, sobreviven
+huérfanos y nada los sirve.
 
 - [ ] **Step 3: Agregar `.gitattributes`**
 
