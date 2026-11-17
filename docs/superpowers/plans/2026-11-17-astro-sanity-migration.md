@@ -657,7 +657,13 @@ Marcado idéntico al actual. Lo que no es transcripción:
   `skill.level`.
 - `ProjectCard` agrega el `aria-label` del botón del ojo desde `interfaceText.viewPlanLabel`,
   que hoy no tiene nombre accesible. La imagen pasa por `imageUrl(image, 600)`.
-- `Footer` no renderiza el `<span>` si `footerText` está vacío, que es el estado actual.
+- `Footer` renderiza **siempre** el `<span class="footer__copy">`, con el texto dentro solo
+  si existe. **Corrección del 2026-11-17, tras la tarea 9:** este plan decía que no lo
+  renderizara cuando `footerText` estuviera vacío, "que es el estado actual". Era falso:
+  producción sí emite el `<span>` vacío, y su margen aporta 72 px al final de cada página.
+  Omitirlo acortaba **todas** las capturas respecto a la línea base — lo detectó el diff de
+  píxeles de la tarea 9. Un `<span>` vacío y ningún `<span>` no son lo mismo cuando el
+  elemento tiene margen.
 - Las tres pestañas se renderizan las tres en el HTML; cuál está visible lo decide la clase
   `filters__active` que pone `resolveDefaultTab`.
 

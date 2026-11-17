@@ -113,8 +113,10 @@ modela en Sanity; el frontend parte la lista.
 
 ### Pie de página
 
-`<span class="footer__copy">` está **vacío**. No hay nada que migrar. El esquema le deja un
-campo opcional por si Efren quiere poner algo.
+`<span class="footer__copy">` está **vacío** — pero el `<span>` **existe**, y su regla CSS
+lleva `margin: 2.5rem 0 2rem`, o sea **72 px de espacio vertical** al final de cada página.
+No hay texto que migrar; sí hay que conservar el elemento. El esquema le deja un campo
+opcional por si Efren quiera poner algo.
 
 ### Meta tags de SEO
 
