@@ -818,6 +818,14 @@ de Node, este es el primer sitio donde mirar.
 
 - [ ] **Step 3: Verificar el deploy preview de la rama**
 
+**Antes de nada, comprobar que el lockfile y los `package.json` concuerdan:**
+`pnpm install --frozen-lockfile` desde un estado limpio. Es la forma exacta del comando que
+corre CI. Durante la tarea 9 se encontró el lockfile commiteado pineando `remixicon 4.9.1`
+mientras `web/package.json` decía `2.5.0` desde la tarea 8: pnpm en CI usa lockfile
+congelado por defecto, así que eso **habría hecho fallar el build del cutover**, o peor,
+instalado la versión que desplaza los iconos 3 px. Un desajuste así no se ve en local, donde
+`pnpm install` corrige el lockfile en silencio.
+
 Expected: las dos URLs sirven el contenido de Sanity, con las meta tags de su idioma.
 
 - [ ] **Step 4: Fundir la rama**
