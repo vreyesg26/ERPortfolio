@@ -685,6 +685,15 @@ La paridad de las animaciones es el objetivo 1 y dos de los anti objetivos del s
 - Modify: `web/src/layouts/BaseLayout.astro`, `web/vitest.config.ts`, las dos páginas
 - Test: `web/src/islands/__tests__/Tabs.test.tsx`
 
+**Las islas no construyen URLs de imagen.** `imageUrl()` depende de `SANITY_PROJECT_ID`, y
+esa variable **no lleva prefijo `PUBLIC_`** a propósito: el contenido se lee solo en el build
+y la variable no debe llegar al bundle del navegador. La consecuencia práctica es que, dentro
+de una isla, `imageUrl()` resolvería al valor centinela y hornearía URLs rotas en silencio.
+La tarea 6 lo blindó por construcción —`image.ts` ya no puede arrastrar el cliente de
+Sanity— pero el valor de la variable sigue sin existir en el cliente. Las URLs se calculan en
+el frontmatter `.astro` y se pasan ya hechas a la isla como props. Si una isla necesita una
+imagen, recibe su `src`, no la función.
+
 **Antes del paso 1:** `web/vitest.config.ts` fija `environment: 'jsdom'` pero **no tiene
 `setupFiles`**, así que los matchers de `@testing-library/jest-dom` (`toBeInTheDocument`,
 `toHaveClass`) no están registrados y el test de `Tabs` fallaría con un error de matcher
