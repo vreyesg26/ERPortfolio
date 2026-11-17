@@ -452,10 +452,25 @@ Las cadenas que no son contenido pero que igual hay que traducir.
 | `order` | number | sí |
 | `isDefault` | boolean | La que abre al cargar. Hoy es Projects, no la primera. |
 
-Se valida que exactamente un `tab` tenga `isDefault` en verdadero, que `key` sea **único**,
-y los tres documentos se protegen contra borrado como si fueran singletons. Sin eso, dos
-pestañas con `key: 'projects'` o un `about` borrado quitarían una sección en silencio: el
-mismo fallo que la lista fija pretende evitar.
+`key` se valida **único** y los tres documentos se protegen contra borrado **y contra
+creación**, como si fueran singletons. Sin eso, dos pestañas con `key: 'projects'` o un
+`about` borrado quitarían una sección en silencio: el mismo fallo que la lista fija pretende
+evitar. Y como `key` es una lista cerrada de tres valores que ya existen, una cuarta pestaña
+sería inguardable: el botón de crear solo podría producir un borrador muerto.
+
+Sobre `isDefault`, **refinamiento posterior a la aprobación** (2026-11-17, tras la revisión
+de la tarea 4): el borrador decía "se valida que exactamente un `tab` tenga `isDefault`".
+Se implementa como **"como mucho uno"**, no "exactamente uno". La intención del spec —que
+siempre abra una pestaña y solo una— se conserva, porque quien la garantiza de verdad es el
+frontend: `resolveDefaultTab` cae a la de menor `order` cuando hay cero o varias marcadas, y
+eso está en el Review Focus del plan y lo cubre un test de la tarea 6.
+
+Exigir exactamente uno desde el Studio obligaba a editar en dos pasos para mover el default
+de una pestaña a otra (marcar la nueva da error mientras la vieja siga marcada; desmarcar la
+vieja primero da error hasta guardar la nueva), y hacía que la cuenta dependiera de
+borradores sin guardar: una pestaña publicada con `isDefault: true` y un borrador obsoleto
+en `false` se contaba dos veces. "Como mucho uno" elimina las dos cosas sin perder la
+garantía.
 
 **`project`** — "Proyectos" (11 documentos)
 
