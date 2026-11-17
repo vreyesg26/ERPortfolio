@@ -1,12 +1,13 @@
 ---
 import Seo from '../components/Seo.astro'
 import type {Lang} from '../lib/i18n'
-import type {SeoData} from '../lib/seo'
+import type {SEO_QUERY_RESULT} from '../sanity.types'
+import 'remixicon/fonts/remixicon.css'
 import '../styles/styles.scss'
 
 interface Props {
   lang: Lang
-  seo: SeoData
+  seo: NonNullable<SEO_QUERY_RESULT>
 }
 
 const {lang, seo} = Astro.props
@@ -22,36 +23,18 @@ const {lang, seo} = Astro.props
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-
-    <link
-      href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css"
-      rel="stylesheet"
-    />
-
-    <!-- Tema antes del primer pintado. El CSS cuelga de body.dark-theme y en <head> el
-         body aun no existe: se observa el documento y se aplica la clase en cuanto el
-         parser lo crea, antes de que se pinte nada. Mismas claves que el sitio actual. -->
-    <script is:inline>
-      (function () {
-        try {
-          if (localStorage.getItem('selected-theme') !== 'dark') return
-        } catch (e) {
-          return
-        }
-        var apply = function () {
-          if (!document.body) return false
-          document.body.classList.add('dark-theme')
-          return true
-        }
-        if (apply()) return
-        var observer = new MutationObserver(function () {
-          if (apply()) observer.disconnect()
-        })
-        observer.observe(document.documentElement, {childList: true})
-      })()
-    </script>
   </head>
   <body>
+    <!-- Tema antes del primer pintado: el parser se detiene en un script sin async, asi
+         que esto corre antes de que se pinte nada del body. Es lo que elimina el
+         parpadeo de tema claro al recargar en oscuro. Mismas claves que el sitio actual. -->
+    <script is:inline>
+      try {
+        if (localStorage.getItem('selected-theme') === 'dark') {
+          document.body.classList.add('dark-theme')
+        }
+      } catch (e) {}
+    </script>
     <slot />
   </body>
 </html>

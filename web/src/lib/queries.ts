@@ -8,36 +8,36 @@ import {defineQuery} from 'groq'
 
 export const PROFILE_QUERY = defineQuery(`*[_type == "profile"][0]{
   name,
-  "profession": coalesce(profession[$lang], profession.es),
+  "profession": select($lang == "en" => coalesce(profession.en, profession.es), profession.es),
   photo,
   socialLinks[]{_key, name, icon, url},
-  stats[]{_key, value, "label": coalesce(label[$lang], label.es)},
-  "cvLabel": coalesce(cvLabel[$lang], cvLabel.es),
+  stats[]{_key, value, "label": select($lang == "en" => coalesce(label.en, label.es), label.es)},
+  "cvLabel": select($lang == "en" => coalesce(cvLabel.en, cvLabel.es), cvLabel.es),
   "cvUrl": select($lang == "en" => cvEn.asset->url, cvEs.asset->url),
   whatsappPhone,
-  "whatsappMessage": coalesce(whatsappMessage[$lang], whatsappMessage.es),
+  "whatsappMessage": select($lang == "en" => coalesce(whatsappMessage.en, whatsappMessage.es), whatsappMessage.es),
   messengerUrl
 }`)
 
 export const ABOUT_QUERY = defineQuery(`*[_type == "about"][0]{
-  paragraphs[]{_key, "text": coalesce(@[$lang], es)}
+  paragraphs[]{_key, "text": select($lang == "en" => coalesce(en, es), es)}
 }`)
 
 export const INTERFACE_TEXT_QUERY = defineQuery(`*[_type == "interfaceText"][0]{
-  "levelBasic": coalesce(levelBasic[$lang], levelBasic.es),
-  "levelIntermediate": coalesce(levelIntermediate[$lang], levelIntermediate.es),
-  "levelAdvanced": coalesce(levelAdvanced[$lang], levelAdvanced.es),
-  "languageToggleLabel": coalesce(languageToggleLabel[$lang], languageToggleLabel.es),
-  "viewPlanLabel": coalesce(viewPlanLabel[$lang], viewPlanLabel.es),
-  "footerText": coalesce(footerText[$lang], footerText.es)
+  "levelBasic": select($lang == "en" => coalesce(levelBasic.en, levelBasic.es), levelBasic.es),
+  "levelIntermediate": select($lang == "en" => coalesce(levelIntermediate.en, levelIntermediate.es), levelIntermediate.es),
+  "levelAdvanced": select($lang == "en" => coalesce(levelAdvanced.en, levelAdvanced.es), levelAdvanced.es),
+  "languageToggleLabel": select($lang == "en" => coalesce(languageToggleLabel.en, languageToggleLabel.es), languageToggleLabel.es),
+  "viewPlanLabel": select($lang == "en" => coalesce(viewPlanLabel.en, viewPlanLabel.es), viewPlanLabel.es),
+  "footerText": select($lang == "en" => coalesce(footerText.en, footerText.es), footerText.es)
 }`)
 
 export const SEO_QUERY = defineQuery(`*[_type == "seo"][0]{
-  "title": coalesce(title[$lang], title.es),
-  "description": coalesce(description[$lang], description.es),
-  "keywords": coalesce(keywords[$lang], keywords.es),
+  "title": select($lang == "en" => coalesce(title.en, title.es), title.es),
+  "description": select($lang == "en" => coalesce(description.en, description.es), description.es),
+  "keywords": select($lang == "en" => coalesce(keywords.en, keywords.es), keywords.es),
   author,
-  "siteName": coalesce(siteName[$lang], siteName.es),
+  "siteName": select($lang == "en" => coalesce(siteName.en, siteName.es), siteName.es),
   siteUrl,
   ogImage,
   themeColor
@@ -46,15 +46,15 @@ export const SEO_QUERY = defineQuery(`*[_type == "seo"][0]{
 export const TABS_QUERY = defineQuery(`*[_type == "tab"] | order(order asc, _id asc){
   _id,
   key,
-  "label": coalesce(label[$lang], label.es),
+  "label": select($lang == "en" => coalesce(label.en, label.es), label.es),
   order,
   isDefault
 }`)
 
 export const PROJECTS_QUERY = defineQuery(`*[_type == "project"] | order(order asc, _id asc){
   _id,
-  "title": coalesce(title[$lang], title.es),
-  "alt": coalesce(alt[$lang], title[$lang], title.es),
+  "title": select($lang == "en" => coalesce(title.en, title.es), title.es),
+  "alt": select($lang == "en" => coalesce(alt.en, title.en, title.es), coalesce(alt.es, title.es)),
   driveUrl,
   image
 }`)
@@ -63,7 +63,7 @@ export const PROJECTS_QUERY = defineQuery(`*[_type == "project"] | order(order a
 // resuelve no aparece en ninguna.
 export const SKILLS_QUERY = defineQuery(`*[_type == "skillCategory"] | order(order asc, _id asc){
   _id,
-  "title": coalesce(title[$lang], title.es),
+  "title": select($lang == "en" => coalesce(title.en, title.es), title.es),
   "skills": *[_type == "skill" && references(^._id)] | order(order asc, _id asc){
     _id,
     name,

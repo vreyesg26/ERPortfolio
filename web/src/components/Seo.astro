@@ -1,11 +1,11 @@
 ---
 import {imageUrl} from '../lib/image'
 import {ogLocale, otherLang, pathFor, type Lang} from '../lib/i18n'
-import type {SeoData} from '../lib/seo'
+import type {SEO_QUERY_RESULT} from '../sanity.types'
 
 interface Props {
   lang: Lang
-  seo: SeoData
+  seo: NonNullable<SEO_QUERY_RESULT>
 }
 
 const {lang, seo} = Astro.props
@@ -14,8 +14,11 @@ const {lang, seo} = Astro.props
 const site = (seo.siteUrl ?? Astro.site?.origin ?? '').replace(/\/+$/, '')
 const abs = (l: Lang) => site + pathFor(l)
 const canonical = abs(lang)
-// Las tarjetas de redes exigen una URL absoluta; 1200 es el ancho recomendado de og:image.
-const image = imageUrl(seo.ogImage, 1200)
+// Se pide el ancho real del asset (va en su _ref: ...-512x512-webp): Sanity no amplia,
+// asi que pedir mas seria declarar una intencion que el codigo no puede cumplir.
+const ref = seo.ogImage?.asset?._ref ?? ''
+const width = Number(/-(\d+)x\d+-/.exec(ref)?.[1]) || 1200
+const image = imageUrl(seo.ogImage, width)
 ---
 
 <title>{seo.title}</title>

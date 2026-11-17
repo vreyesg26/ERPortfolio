@@ -354,14 +354,10 @@ export type AllSanitySchemaTypes =
 
 // Source: ../web/src/lib/queries.ts
 // Variable: PROFILE_QUERY
-// Query: *[_type == "profile"][0]{  name,  "profession": coalesce(profession[$lang], profession.es),  photo,  socialLinks[]{_key, name, icon, url},  stats[]{_key, value, "label": coalesce(label[$lang], label.es)},  "cvLabel": coalesce(cvLabel[$lang], cvLabel.es),  "cvUrl": select($lang == "en" => cvEn.asset->url, cvEs.asset->url),  whatsappPhone,  "whatsappMessage": coalesce(whatsappMessage[$lang], whatsappMessage.es),  messengerUrl}
+// Query: *[_type == "profile"][0]{  name,  "profession": select($lang == "en" => coalesce(profession.en, profession.es), profession.es),  photo,  socialLinks[]{_key, name, icon, url},  stats[]{_key, value, "label": select($lang == "en" => coalesce(label.en, label.es), label.es)},  "cvLabel": select($lang == "en" => coalesce(cvLabel.en, cvLabel.es), cvLabel.es),  "cvUrl": select($lang == "en" => cvEn.asset->url, cvEs.asset->url),  whatsappPhone,  "whatsappMessage": select($lang == "en" => coalesce(whatsappMessage.en, whatsappMessage.es), whatsappMessage.es),  messengerUrl}
 export type PROFILE_QUERY_RESULT = {
   name: string;
-  profession: Array<{
-    _type: "localeString";
-    es: string;
-    en: string;
-  }>;
+  profession: string;
   photo: {
     asset?: SanityImageAssetReference;
     media?: unknown;
@@ -379,105 +375,46 @@ export type PROFILE_QUERY_RESULT = {
   stats: Array<{
     _key: string;
     value: string;
-    label: Array<{
-      _type: "localeText";
-      es: string;
-      en: string;
-    }>;
+    label: string;
   }>;
-  cvLabel: Array<{
-    _type: "localeString";
-    es: string;
-    en: string;
-  }>;
+  cvLabel: string;
   cvUrl: string | null;
   whatsappPhone: string;
-  whatsappMessage: Array<{
-    _type: "localeString";
-    es: string;
-    en: string;
-  }>;
+  whatsappMessage: string;
   messengerUrl: string | null;
 } | null;
 
 // Source: ../web/src/lib/queries.ts
 // Variable: ABOUT_QUERY
-// Query: *[_type == "about"][0]{  paragraphs[]{_key, "text": coalesce(@[$lang], es)}}
+// Query: *[_type == "about"][0]{  paragraphs[]{_key, "text": select($lang == "en" => coalesce(en, es), es)}}
 export type ABOUT_QUERY_RESULT = {
   paragraphs: Array<{
     _key: string;
-    text: Array<
-      {
-        _key: string;
-      } & LocaleText
-    >;
+    text: string;
   }>;
 } | null;
 
 // Source: ../web/src/lib/queries.ts
 // Variable: INTERFACE_TEXT_QUERY
-// Query: *[_type == "interfaceText"][0]{  "levelBasic": coalesce(levelBasic[$lang], levelBasic.es),  "levelIntermediate": coalesce(levelIntermediate[$lang], levelIntermediate.es),  "levelAdvanced": coalesce(levelAdvanced[$lang], levelAdvanced.es),  "languageToggleLabel": coalesce(languageToggleLabel[$lang], languageToggleLabel.es),  "viewPlanLabel": coalesce(viewPlanLabel[$lang], viewPlanLabel.es),  "footerText": coalesce(footerText[$lang], footerText.es)}
+// Query: *[_type == "interfaceText"][0]{  "levelBasic": select($lang == "en" => coalesce(levelBasic.en, levelBasic.es), levelBasic.es),  "levelIntermediate": select($lang == "en" => coalesce(levelIntermediate.en, levelIntermediate.es), levelIntermediate.es),  "levelAdvanced": select($lang == "en" => coalesce(levelAdvanced.en, levelAdvanced.es), levelAdvanced.es),  "languageToggleLabel": select($lang == "en" => coalesce(languageToggleLabel.en, languageToggleLabel.es), languageToggleLabel.es),  "viewPlanLabel": select($lang == "en" => coalesce(viewPlanLabel.en, viewPlanLabel.es), viewPlanLabel.es),  "footerText": select($lang == "en" => coalesce(footerText.en, footerText.es), footerText.es)}
 export type INTERFACE_TEXT_QUERY_RESULT = {
-  levelBasic: Array<{
-    _type: "localeString";
-    es: string;
-    en: string;
-  }>;
-  levelIntermediate: Array<{
-    _type: "localeString";
-    es: string;
-    en: string;
-  }>;
-  levelAdvanced: Array<{
-    _type: "localeString";
-    es: string;
-    en: string;
-  }>;
-  languageToggleLabel: Array<{
-    _type: "localeString";
-    es: string;
-    en: string;
-  }>;
-  viewPlanLabel: Array<{
-    _type: "localeString";
-    es: string;
-    en: string;
-  }>;
-  footerText:
-    | Array<{
-        _type: "localeString";
-        es: string;
-        en: string;
-      }>
-    | string
-    | null;
+  levelBasic: string;
+  levelIntermediate: string;
+  levelAdvanced: string;
+  languageToggleLabel: string;
+  viewPlanLabel: string;
+  footerText: string | null;
 } | null;
 
 // Source: ../web/src/lib/queries.ts
 // Variable: SEO_QUERY
-// Query: *[_type == "seo"][0]{  "title": coalesce(title[$lang], title.es),  "description": coalesce(description[$lang], description.es),  "keywords": coalesce(keywords[$lang], keywords.es),  author,  "siteName": coalesce(siteName[$lang], siteName.es),  siteUrl,  ogImage,  themeColor}
+// Query: *[_type == "seo"][0]{  "title": select($lang == "en" => coalesce(title.en, title.es), title.es),  "description": select($lang == "en" => coalesce(description.en, description.es), description.es),  "keywords": select($lang == "en" => coalesce(keywords.en, keywords.es), keywords.es),  author,  "siteName": select($lang == "en" => coalesce(siteName.en, siteName.es), siteName.es),  siteUrl,  ogImage,  themeColor}
 export type SEO_QUERY_RESULT = {
-  title: Array<{
-    _type: "localeString";
-    es: string;
-    en: string;
-  }>;
-  description: Array<{
-    _type: "localeText";
-    es: string;
-    en: string;
-  }>;
-  keywords: Array<{
-    _type: "localeString";
-    es: string;
-    en: string;
-  }>;
+  title: string;
+  description: string;
+  keywords: string;
   author: string | null;
-  siteName: Array<{
-    _type: "localeString";
-    es: string;
-    en: string;
-  }>;
+  siteName: string;
   siteUrl: string | null;
   ogImage: {
     asset?: SanityImageAssetReference;
@@ -491,40 +428,22 @@ export type SEO_QUERY_RESULT = {
 
 // Source: ../web/src/lib/queries.ts
 // Variable: TABS_QUERY
-// Query: *[_type == "tab"] | order(order asc, _id asc){  _id,  key,  "label": coalesce(label[$lang], label.es),  order,  isDefault}
+// Query: *[_type == "tab"] | order(order asc, _id asc){  _id,  key,  "label": select($lang == "en" => coalesce(label.en, label.es), label.es),  order,  isDefault}
 export type TABS_QUERY_RESULT = Array<{
   _id: string;
   key: "about" | "projects" | "skills";
-  label: Array<{
-    _type: "localeString";
-    es: string;
-    en: string;
-  }>;
+  label: string;
   order: number;
   isDefault: boolean | null;
 }>;
 
 // Source: ../web/src/lib/queries.ts
 // Variable: PROJECTS_QUERY
-// Query: *[_type == "project"] | order(order asc, _id asc){  _id,  "title": coalesce(title[$lang], title.es),  "alt": coalesce(alt[$lang], title[$lang], title.es),  driveUrl,  image}
+// Query: *[_type == "project"] | order(order asc, _id asc){  _id,  "title": select($lang == "en" => coalesce(title.en, title.es), title.es),  "alt": select($lang == "en" => coalesce(alt.en, title.en, title.es), coalesce(alt.es, title.es)),  driveUrl,  image}
 export type PROJECTS_QUERY_RESULT = Array<{
   _id: string;
-  title: Array<{
-    _type: "localeString";
-    es: string;
-    en: string;
-  }>;
-  alt:
-    | Array<{
-        _type: "localeString";
-        es: string;
-        en: string;
-      }>
-    | Array<{
-        _type: "localeString";
-        es: string;
-        en: string;
-      }>;
+  title: string;
+  alt: string;
   driveUrl: string;
   image: {
     asset?: SanityImageAssetReference;
@@ -537,14 +456,10 @@ export type PROJECTS_QUERY_RESULT = Array<{
 
 // Source: ../web/src/lib/queries.ts
 // Variable: SKILLS_QUERY
-// Query: *[_type == "skillCategory"] | order(order asc, _id asc){  _id,  "title": coalesce(title[$lang], title.es),  "skills": *[_type == "skill" && references(^._id)] | order(order asc, _id asc){    _id,    name,    level  }}
+// Query: *[_type == "skillCategory"] | order(order asc, _id asc){  _id,  "title": select($lang == "en" => coalesce(title.en, title.es), title.es),  "skills": *[_type == "skill" && references(^._id)] | order(order asc, _id asc){    _id,    name,    level  }}
 export type SKILLS_QUERY_RESULT = Array<{
   _id: string;
-  title: Array<{
-    _type: "localeString";
-    es: string;
-    en: string;
-  }>;
+  title: string;
   skills: Array<{
     _id: string;
     name: string;
@@ -555,13 +470,13 @@ export type SKILLS_QUERY_RESULT = Array<{
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    '*[_type == "profile"][0]{\n  name,\n  "profession": coalesce(profession[$lang], profession.es),\n  photo,\n  socialLinks[]{_key, name, icon, url},\n  stats[]{_key, value, "label": coalesce(label[$lang], label.es)},\n  "cvLabel": coalesce(cvLabel[$lang], cvLabel.es),\n  "cvUrl": select($lang == "en" => cvEn.asset->url, cvEs.asset->url),\n  whatsappPhone,\n  "whatsappMessage": coalesce(whatsappMessage[$lang], whatsappMessage.es),\n  messengerUrl\n}': PROFILE_QUERY_RESULT;
-    '*[_type == "about"][0]{\n  paragraphs[]{_key, "text": coalesce(@[$lang], es)}\n}': ABOUT_QUERY_RESULT;
-    '*[_type == "interfaceText"][0]{\n  "levelBasic": coalesce(levelBasic[$lang], levelBasic.es),\n  "levelIntermediate": coalesce(levelIntermediate[$lang], levelIntermediate.es),\n  "levelAdvanced": coalesce(levelAdvanced[$lang], levelAdvanced.es),\n  "languageToggleLabel": coalesce(languageToggleLabel[$lang], languageToggleLabel.es),\n  "viewPlanLabel": coalesce(viewPlanLabel[$lang], viewPlanLabel.es),\n  "footerText": coalesce(footerText[$lang], footerText.es)\n}': INTERFACE_TEXT_QUERY_RESULT;
-    '*[_type == "seo"][0]{\n  "title": coalesce(title[$lang], title.es),\n  "description": coalesce(description[$lang], description.es),\n  "keywords": coalesce(keywords[$lang], keywords.es),\n  author,\n  "siteName": coalesce(siteName[$lang], siteName.es),\n  siteUrl,\n  ogImage,\n  themeColor\n}': SEO_QUERY_RESULT;
-    '*[_type == "tab"] | order(order asc, _id asc){\n  _id,\n  key,\n  "label": coalesce(label[$lang], label.es),\n  order,\n  isDefault\n}': TABS_QUERY_RESULT;
-    '*[_type == "project"] | order(order asc, _id asc){\n  _id,\n  "title": coalesce(title[$lang], title.es),\n  "alt": coalesce(alt[$lang], title[$lang], title.es),\n  driveUrl,\n  image\n}': PROJECTS_QUERY_RESULT;
-    '*[_type == "skillCategory"] | order(order asc, _id asc){\n  _id,\n  "title": coalesce(title[$lang], title.es),\n  "skills": *[_type == "skill" && references(^._id)] | order(order asc, _id asc){\n    _id,\n    name,\n    level\n  }\n}': SKILLS_QUERY_RESULT;
+    '*[_type == "profile"][0]{\n  name,\n  "profession": select($lang == "en" => coalesce(profession.en, profession.es), profession.es),\n  photo,\n  socialLinks[]{_key, name, icon, url},\n  stats[]{_key, value, "label": select($lang == "en" => coalesce(label.en, label.es), label.es)},\n  "cvLabel": select($lang == "en" => coalesce(cvLabel.en, cvLabel.es), cvLabel.es),\n  "cvUrl": select($lang == "en" => cvEn.asset->url, cvEs.asset->url),\n  whatsappPhone,\n  "whatsappMessage": select($lang == "en" => coalesce(whatsappMessage.en, whatsappMessage.es), whatsappMessage.es),\n  messengerUrl\n}': PROFILE_QUERY_RESULT;
+    '*[_type == "about"][0]{\n  paragraphs[]{_key, "text": select($lang == "en" => coalesce(en, es), es)}\n}': ABOUT_QUERY_RESULT;
+    '*[_type == "interfaceText"][0]{\n  "levelBasic": select($lang == "en" => coalesce(levelBasic.en, levelBasic.es), levelBasic.es),\n  "levelIntermediate": select($lang == "en" => coalesce(levelIntermediate.en, levelIntermediate.es), levelIntermediate.es),\n  "levelAdvanced": select($lang == "en" => coalesce(levelAdvanced.en, levelAdvanced.es), levelAdvanced.es),\n  "languageToggleLabel": select($lang == "en" => coalesce(languageToggleLabel.en, languageToggleLabel.es), languageToggleLabel.es),\n  "viewPlanLabel": select($lang == "en" => coalesce(viewPlanLabel.en, viewPlanLabel.es), viewPlanLabel.es),\n  "footerText": select($lang == "en" => coalesce(footerText.en, footerText.es), footerText.es)\n}': INTERFACE_TEXT_QUERY_RESULT;
+    '*[_type == "seo"][0]{\n  "title": select($lang == "en" => coalesce(title.en, title.es), title.es),\n  "description": select($lang == "en" => coalesce(description.en, description.es), description.es),\n  "keywords": select($lang == "en" => coalesce(keywords.en, keywords.es), keywords.es),\n  author,\n  "siteName": select($lang == "en" => coalesce(siteName.en, siteName.es), siteName.es),\n  siteUrl,\n  ogImage,\n  themeColor\n}': SEO_QUERY_RESULT;
+    '*[_type == "tab"] | order(order asc, _id asc){\n  _id,\n  key,\n  "label": select($lang == "en" => coalesce(label.en, label.es), label.es),\n  order,\n  isDefault\n}': TABS_QUERY_RESULT;
+    '*[_type == "project"] | order(order asc, _id asc){\n  _id,\n  "title": select($lang == "en" => coalesce(title.en, title.es), title.es),\n  "alt": select($lang == "en" => coalesce(alt.en, title.en, title.es), coalesce(alt.es, title.es)),\n  driveUrl,\n  image\n}': PROJECTS_QUERY_RESULT;
+    '*[_type == "skillCategory"] | order(order asc, _id asc){\n  _id,\n  "title": select($lang == "en" => coalesce(title.en, title.es), title.es),\n  "skills": *[_type == "skill" && references(^._id)] | order(order asc, _id asc){\n    _id,\n    name,\n    level\n  }\n}': SKILLS_QUERY_RESULT;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too
