@@ -19,7 +19,8 @@ export function imageUrl(image: SanityImageField, width: number): string | undef
   const source = builder.image(image)
   // La canalización de imágenes de Sanity no transforma SVG: se sirven tal cual.
   if (ref.endsWith('-svg')) return source.url()
-  const sized = source.width(width)
+  // fit('max'): el ancho es un tope. Sin esto Sanity amplia imagenes menores (500px -> 600px).
+  const sized = source.width(width).fit('max')
   return sized.auto('format').url()
 }
 
