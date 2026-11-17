@@ -144,12 +144,23 @@ dio.
 - Produces: `projectId` de Sanity y dataset `production`, consumidos por todas las tareas
   siguientes vía `studio/sanity.config.ts` y `web/.env.local`.
 
-- [ ] **Step 1: [Controlador] Crear el proyecto de Sanity**
+- [x] **Step 1: [Controlador] Crear el proyecto de Sanity — HECHO el 2026-11-17**
 
-Nombre "Portafolio Efren", organización `oHNPn8dSJ`, dataset `production` público.
-Registrar `http://localhost:3333` y `http://localhost:4321` como orígenes CORS **con
-credenciales** (sin el primero, `sanity dev` no puede autenticar a Efren). Anotar el
-`projectId` en este plan antes de seguir.
+Ya está aprovisionado. Los valores que necesitan los pasos siguientes:
+
+| | |
+|---|---|
+| `projectId` | **`t0yrmwzx`** |
+| displayName | Portafolio Efren |
+| organizationId | `oHNPn8dSJ` |
+| dataset | `production`, `aclMode: public` (verificado) — el sitio lee sin token |
+| Orígenes CORS con credenciales | `http://localhost:3333` y `http://localhost:4321` |
+
+**Los tokens de API no se escriben en ningún archivo en esta tarea.** `create_project`
+devolvió un read token y un write token; el controlador escribe el write token en
+`studio/.env.local` (modo 600) **después** de que el paso 2 commitee las reglas de
+`.gitignore`. Quien implemente esta tarea no necesita ningún token: `sanity.config.ts` solo
+lleva el `projectId` y el dataset, que son públicos por diseño.
 
 - [ ] **Step 2: Agregar las reglas al `.gitignore` y commitear, antes de escribir secretos**
 
