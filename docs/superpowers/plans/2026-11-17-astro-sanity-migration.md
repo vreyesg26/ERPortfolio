@@ -101,9 +101,10 @@ y los dos temas en 320 y en 1280. Guardar como
 corre antes a propósito. Usar `npx`.
 
 Run: `npx sass@1 assets/scss/styles.scss /tmp/baseline.css --no-source-map && diff <(npx prettier@3 --parser css /tmp/baseline.css) <(npx prettier@3 --parser css assets/css/styles.css)`
-Expected: diferencias en las cinco reglas de la tabla "La deriva del CSS" del spec.
+Expected: diferencias en las reglas de la tabla "La deriva del CSS" del spec (son siete,
+y la tabla es la autoridad — la prosa del spec decía "cinco" por error hasta el 2026-11-17).
 
-- [ ] **Step 3: Aplicar las cinco reglas al SCSS**
+- [ ] **Step 3: Reconciliar las siete reglas**
 
 Editando **en sitio** (los parciales están en CRLF). El CSS en producción es la fuente de
 verdad: `.profile__perfil` a 120×120 con la img a 90 px y `object-fit: cover` y **sin**

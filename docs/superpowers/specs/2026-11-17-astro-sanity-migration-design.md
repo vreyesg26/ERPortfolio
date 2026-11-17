@@ -568,8 +568,9 @@ cara a los buscadores.
 ## La deriva del CSS
 
 `assets/css/styles.css` (613 líneas, LF) está **editado a mano después de compilarse** y ya
-no corresponde a `assets/scss/` (CRLF). Son **cinco** reglas, verificadas una por una el
-2026-11-17:
+no corresponde a `assets/scss/` (CRLF). Son **siete** reglas, verificadas una por una el
+2026-11-17. Las seis primeras son valores que difieren; la séptima es una regla que el SCSS
+tiene y el CSS no:
 
 | Regla | En el CSS (producción) | En el SCSS | Efecto si no se reconcilia |
 |---|---|---|---|
@@ -579,10 +580,11 @@ no corresponde a `assets/scss/` (CRLF). Son **cinco** reglas, verificadas una po
 | `.projects__card` | `max-height: 225px` | **no existe** | **Las 11 tarjetas pierden su tope de alto, en la pestaña que abre por defecto** |
 | `.projects__card` | `cursor: pointer` | **no existe** | El cursor deja de indicar que la tarjeta es interactiva |
 | `.projects__button` | `padding: .4rem` | `padding: .5rem` | El botón del ojo queda un poco más grande |
+| `.profile__perfil` dentro de `@media (min-width: 992px)` | **no existe** | 120×120 px, img 90 px | Regla muerta en el CSS compilado. Sus valores son idénticos a la regla base, así que no tiene efecto visual, pero re-declara lo mismo en un breakpoint y confunde a quien lo lea después. |
 
-**El CSS es la fuente de verdad** — es lo que está en producción, así que **las cinco se
-incorporan al SCSS**, incluida la de `.4rem`, que parece un ajuste fino y no un
-experimento olvidado. La primera compuerta del plan es compilar el SCSS y comprobar que
+**El CSS es la fuente de verdad** — es lo que está en producción, así que **las siete se
+reconcilian**: las seis primeras se incorporan al SCSS, incluida la de `.4rem` (parece un
+ajuste fino y no un experimento olvidado), y la séptima se **borra** del SCSS. La primera compuerta del plan es compilar el SCSS y comprobar que
 reproduce el CSS actual; reconciliar solo las dos primeras la haría fallar sin que se sepa
 por qué, y seguir de largo recortaría las tarjetas de proyecto en silencio.
 
@@ -785,8 +787,9 @@ Sin consultar a Victor, por ser reversibles o de proceso:
 
 Y estas, tras la revisión del 2026-11-17:
 
-12. **Las cinco reglas de deriva se incorporan al SCSS**, incluida `padding: .4rem`, porque
-    el principio ya estaba fijado: el CSS en producción es la fuente de verdad.
+12. **Las siete reglas de deriva se reconcilian**, incluida `padding: .4rem`, porque el
+    principio ya estaba fijado: el CSS en producción es la fuente de verdad. Seis se
+    incorporan al SCSS y la del breakpoint redundante se borra.
 13. **`stat.label` pasa a `localeText`.** Era un error: un `string` del Studio es de una
     sola línea y las leyendas necesitan un salto. Esto agrega una declaración
     `white-space: pre-line` al SCSS, que roza el no objetivo de "no reescribir el CSS"; una
@@ -810,7 +813,7 @@ abiertas".
 
 Lo que el borrador tenía **mal**, no solo incompleto:
 
-- **La deriva del CSS eran cinco reglas, no dos.** El borrador afirmaba que estaba toda en
+- **La deriva del CSS eran siete reglas, no dos.** El borrador afirmaba que estaba toda en
   `.profile__perfil` y `.profile__border`. Faltaban `max-height: 225px` y `cursor: pointer`
   en `.projects__card` (ninguna existe en el SCSS) y un `padding` de `.4rem` contra `.5rem`
   en `.projects__button`. El `max-height` es el grave: sin él las 11 tarjetas pierden su
