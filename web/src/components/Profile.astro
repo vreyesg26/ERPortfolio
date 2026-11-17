@@ -15,8 +15,8 @@ interface Props {
 }
 
 const {lang, profile, interfaceText} = Astro.props
-// El CSS pinta la foto a 120 px: se pide al doble para pantallas retina.
-const photo = imageUrl(profile.photo, 240)
+// El CSS pinta la foto a 120 px: se piden 360 (3x) para pantallas con DPR 3. Sanity no amplia (fit=max); el original es 512.
+const photo = imageUrl(profile.photo, 360)
 ---
 
 <header class="profile container">
