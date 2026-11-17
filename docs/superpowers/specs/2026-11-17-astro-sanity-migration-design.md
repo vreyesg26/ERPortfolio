@@ -319,7 +319,7 @@ Los favicons de `assets/img/favicon_io/` se mueven a `web/public/`.
 el `sanity.types.ts` generado compile igual en los dos proyectos.
 
 `web/`: `astro` 7.4.x, `@astrojs/react` 7.1.x, `@sanity/client` 8.16.0, `groq` 6.23.0,
-`@sanity/image-url` 2.1.x, `sass`, `remixicon` 4.9.1, `scrollreveal` 4.0.9, `react` 19.
+`@sanity/image-url` 2.1.x, `sass`, `remixicon` **2.5.0**, `scrollreveal` 4.0.9, `react` 19.
 Dev: `vitest`, `typescript`.
 
 **`@sanity/astro` se quitó el 2026-11-17**, tras la tarea 6. Estaba en esta lista por
@@ -335,13 +335,24 @@ por corazonada. Además arrastraba como peers `@sanity/visual-editing-standalone
 **Remixicon pasa a ser un paquete de npm**, no el `<link>` a jsdelivr que hay hoy: una
 petición externa menos y los iconos dejan de depender de un CDN ajeno.
 
-El sitio carga hoy la **2.5.0**, y Remixicon renombró glifos de marcas en la v3, así que
-subir a 4.9.1 podía cambiar iconos en silencio. **Verificado el 2026-11-17 contra el CSS
-publicado de 4.9.1:** los 12 glifos que usa el sitio existen todos
+El sitio carga hoy la **2.5.0** desde jsdelivr, y se queda en 2.5.0 como paquete de npm.
+
+Corrección del 2026-11-17, tras la tarea 8: este spec decía 4.9.1. Verifiqué que los 12
+glifos que usa el sitio existen en 4.9.1 y concluí que subir era seguro, **pero comprobé los
+nombres, no el renderizado**. El implementador de la tarea 8, comparando contra las capturas
+de línea base, encontró que con la 4.9.1 los iconos de redes **se dibujan 3 px más abajo**
+dentro de cajas idénticas: las métricas de la fuente cambiaron entre la v2 y la v4. Eso viola
+el objetivo 1 (paridad visual exacta) y el anti objetivo "si algo se ve distinto, es un
+error".
+
+Las dos cosas se confundieron en una sola decisión. Pasar a npm era para **quitar la
+dependencia de un CDN ajeno**; subir de versión no aportaba nada y costaba la paridad. Se
+separan: npm sí, versión 2.5.0, que existe en el registro y tiene los 12 glifos
 (`ri-instagram-line`, `ri-linkedin-box-line`, `ri-facebook-box-line`, `ri-whatsapp-line`,
 `ri-messenger-line`, `ri-global-line`, `ri-moon-line`, `ri-sun-line`, `ri-eye-line`,
-`ri-download-line`, `ri-checkbox-circle-line`, `ri-arrow-up-line`). La versión se fija
-exacta, no con `^`, para que una actualización no vuelva a abrir el riesgo.
+`ri-download-line`, `ri-checkbox-circle-line`, `ri-arrow-up-line`), verificados contra su CSS
+publicado. La versión se fija exacta, no con `^`, para que una actualización no vuelva a
+abrir el riesgo.
 
 `socialLink.icon` se queda como string libre y no como lista cerrada: una clase mal
 escrita deja un cuadro vacío que se ve de inmediato en el Studio, no una sección perdida
