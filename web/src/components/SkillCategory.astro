@@ -1,0 +1,31 @@
+---
+import {chunk} from '../lib/content'
+import type {SKILLS_QUERY_RESULT} from '../sanity.types'
+import SkillItem from './SkillItem.astro'
+
+type Category = SKILLS_QUERY_RESULT[number]
+
+interface Props {
+  category: Pick<Category, 'title'>
+  skills: Category['skills']
+  levels: Record<Category['skills'][number]['level'], string>
+}
+
+const {category, skills, levels} = Astro.props
+// Columnas de tres: 3+2 en Diseño y 3+1 en Microsoft, como en el sitio actual.
+const groups = chunk(skills, 3)
+---
+
+<div class="skills__area">
+  <h3 class="skills__title">{category.title}</h3>
+
+  <div class="skills__box">
+    {
+      groups.map((group) => (
+        <div class="skills__group">
+          {group.map((skill) => <SkillItem skill={skill} levels={levels} />)}
+        </div>
+      ))
+    }
+  </div>
+</div>

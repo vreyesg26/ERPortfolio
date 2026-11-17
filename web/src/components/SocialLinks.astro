@@ -1,0 +1,21 @@
+---
+import type {PROFILE_QUERY_RESULT} from '../sanity.types'
+
+type Profile = NonNullable<PROFILE_QUERY_RESULT>
+
+interface Props {
+  links: Profile['socialLinks']
+}
+
+const {links} = Astro.props
+---
+
+<ul class="profile__social">
+  {
+    links.map((link) => (
+      <a href={link.url} target="_blank" class="profile__social-link" aria-label={link.name}>
+        <i class={link.icon} />
+      </a>
+    ))
+  }
+</ul>

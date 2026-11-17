@@ -1,0 +1,29 @@
+---
+import type {PROFILE_QUERY_RESULT} from '../sanity.types'
+
+type Profile = NonNullable<PROFILE_QUERY_RESULT>
+
+interface Props {
+  stats: Profile['stats']
+}
+
+const {stats} = Astro.props
+---
+
+<div class="profile__info grid">
+  {
+    stats.map((stat) => (
+      <div class="profile__info-group">
+        <h3 class="profile__info-number">{stat.value}</h3>
+        <p class="profile__info-description">{stat.label}</p>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  /* El contenido lleva un salto de línea real, no <br>: pre-line lo respeta. */
+  .profile__info-description {
+    white-space: pre-line;
+  }
+</style>

@@ -1,0 +1,21 @@
+---
+import type {SKILLS_QUERY_RESULT} from '../sanity.types'
+
+type Skill = SKILLS_QUERY_RESULT[number]['skills'][number]
+
+interface Props {
+  skill: Skill
+  levels: Record<Skill['level'], string>
+}
+
+const {skill, levels} = Astro.props
+---
+
+<div class="skills__data">
+  <i class="ri-checkbox-circle-line"></i>
+
+  <div>
+    <h3 class="skills__name">{skill.name}</h3>
+    <span class="skills__level">{levels[skill.level]}</span>
+  </div>
+</div>

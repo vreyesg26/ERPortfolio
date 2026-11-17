@@ -1,0 +1,20 @@
+---
+import type {SKILLS_QUERY_RESULT} from '../sanity.types'
+import SkillCategory from './SkillCategory.astro'
+
+interface Props {
+  categories: SKILLS_QUERY_RESULT
+  levels: Record<SKILLS_QUERY_RESULT[number]['skills'][number]['level'], string>
+  active: boolean
+}
+
+const {categories, levels, active} = Astro.props
+---
+
+<div class:list={['skills__content grid', {filters__active: active}]} data-content id="skills">
+  {
+    categories.map((category) => (
+      <SkillCategory category={category} skills={category.skills} levels={levels} />
+    ))
+  }
+</div>

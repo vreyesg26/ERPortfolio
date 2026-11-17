@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Tabs from '../islands/Tabs'
+import {resolveDefaultTab} from '../lib/content'
+import type {Lang} from '../lib/i18n'
+import {
+  ABOUT_QUERY,
+  INTERFACE_TEXT_QUERY,
+  PROFILE_QUERY,
+  PROJECTS_QUERY,
+  SKILLS_QUERY,
+  TABS_QUERY,
+} from '../lib/queries'
+import {client} from '../lib/sanity'
+import About from './About.astro'
+import Footer from './Footer.astro'
+import Profile from './Profile.astro'
+import ProjectGrid from './ProjectGrid.astro'
+import SkillsPanel from './SkillsPanel.astro'
+
+interface Props {
+  lang: Lang
+}
+
+const {lang} = Astro.props
+const profile = await client.fetch(PROFILE_QUERY, {lang})
+if (!profile) throw new Error('Falta el documento profile en Sanity')
+const interfaceText = await client.fetch(INTERFACE_TEXT_QUERY, {lang})
+if (!interfaceText) throw new Error('Falta el documento interfaceText en Sanity')
+const about = await client.fetch(ABOUT_QUERY, {lang})
+if (!about) throw new Error('Falta el documento about en Sanity')
+const tabs = await client.fetch(TABS_QUERY, {lang})
+const projects = await client.fetch(PROJECTS_QUERY, {lang})
+const categories = await client.fetch(SKILLS_QUERY, {lang})
+
+const defaultKey = resolveDefaultTab(tabs)?.key
+const levels = {
+  basic: interfaceText.levelBasic,
+  intermediate: interfaceText.levelIntermediate,
+  advanced: interfaceText.levelAdvanced,
+}
+---
+
+<BaseLayout lang={lang}>
+  <Profile lang={lang} profile={profile} interfaceText={interfaceText} />
+
+  <main class="main">
+    <section class="filters container">
+      <Tabs client:load tabs={tabs.map(({key, label}) => ({key, label}))} defaultKey={defaultKey} />
+
+      {/* Los tres paneles van en el HTML; filters__active decide cuál se ve. */}
+      <div class="filters__sections">
+        <About about={about} active={defaultKey === 'about'} />
+        <ProjectGrid
+          projects={projects}
+          viewPlanLabel={interfaceText.viewPlanLabel}
+          active={defaultKey === 'projects'}
+        />
+        <SkillsPanel categories={categories} levels={levels} active={defaultKey === 'skills'} />
+      </div>
+    </section>
+  </main>
+
+  <Footer text={interfaceText.footerText} />
+</BaseLayout>

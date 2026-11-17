@@ -1,0 +1,56 @@
+---
+import {imageAlt, imageUrl} from '../lib/image'
+import ThemeToggle from '../islands/ThemeToggle'
+import type {Lang} from '../lib/i18n'
+import type {INTERFACE_TEXT_QUERY_RESULT, PROFILE_QUERY_RESULT} from '../sanity.types'
+import LanguageToggle from './LanguageToggle.astro'
+import ProfileButtons from './ProfileButtons.astro'
+import SocialLinks from './SocialLinks.astro'
+import Stats from './Stats.astro'
+
+interface Props {
+  lang: Lang
+  profile: NonNullable<PROFILE_QUERY_RESULT>
+  interfaceText: NonNullable<INTERFACE_TEXT_QUERY_RESULT>
+}
+
+const {lang, profile, interfaceText} = Astro.props
+// El CSS pinta la foto a 120 px: se piden 360 (3x) para pantallas con DPR 3. Sanity no amplia (fit=max); el original es 512.
+const photo = imageUrl(profile.photo, 360)
+---
+
+<header class="profile container">
+  <div class="profile__actions">
+    <LanguageToggle lang={lang} label={interfaceText.languageToggleLabel} />
+    <ThemeToggle client:load />
+    <!-- Icono antes del primer pintado, como main.js: el boton ya existe aqui y el script
+         bloquea el parser. data-astro-rerun por el reemplazo del body del ClientRouter. -->
+    <script is:inline data-astro-rerun>
+      try {
+        if (localStorage.getItem('selected-icon') === 'ri-moon-line') {
+          document.getElementById('theme-button').classList.add('ri-sun-line')
+        }
+      } catch (e) {}
+    </script>
+  </div>
+
+  <div class="profile__container grid">
+    <div class="profile__data">
+      <div class="profile__border">
+        <div class="profile__perfil">
+          <img src={photo} alt={imageAlt(profile.photo, '')} />
+        </div>
+      </div>
+
+      <h2 class="profile__name">{profile.name}</h2>
+      <h3 class="profile__profession">
+        <span>{profile.profession}</span>
+      </h3>
+
+      <SocialLinks links={profile.socialLinks} />
+    </div>
+
+    <Stats stats={profile.stats} />
+    <ProfileButtons profile={profile} />
+  </div>
+</header>

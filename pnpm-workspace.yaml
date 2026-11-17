@@ -1,0 +1,7 @@
+packages:
+  - studio
+  - web
+allowBuilds:
+  '@parcel/watcher': false
+  esbuild: true
+  scrollreveal: false

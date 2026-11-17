@@ -1,0 +1,54 @@
+---
+import {imageUrl} from '../lib/image'
+import {ogLocale, otherLang, pathFor, type Lang} from '../lib/i18n'
+import type {SEO_QUERY_RESULT} from '../sanity.types'
+
+interface Props {
+  lang: Lang
+  seo: NonNullable<SEO_QUERY_RESULT>
+}
+
+const {lang, seo} = Astro.props
+
+// siteUrl viene del singleton; sin barra final para componer las rutas.
+const origin = seo.siteUrl ?? Astro.site?.origin
+if (!origin) {
+  throw new Error(
+    'Falta la direccion del sitio: rellenar siteUrl en el documento seo de Sanity (canonical y hreflang exigen URLs absolutas).',
+  )
+}
+const site = origin.replace(/\/+$/, '')
+const abs = (l: Lang) => site + pathFor(l)
+const canonical = abs(lang)
+// Se pide el ancho real del asset (va en su _ref: ...-512x512-webp): Sanity no amplia,
+// asi que pedir mas seria declarar una intencion que el codigo no puede cumplir.
+const ref = seo.ogImage?.asset?._ref ?? ''
+const width = Number(/-(\d+)x\d+-/.exec(ref)?.[1]) || 1200
+const image = imageUrl(seo.ogImage, width)
+---
+
+<title>{seo.title}</title>
+<meta name="description" content={seo.description} />
+<meta name="keywords" content={seo.keywords} />
+{seo.author && <meta name="author" content={seo.author} />}
+{seo.themeColor && <meta name="theme-color" content={seo.themeColor} />}
+
+<link rel="canonical" href={canonical} />
+<link rel="alternate" hreflang="es" href={abs('es')} />
+<link rel="alternate" hreflang="en" href={abs('en')} />
+<link rel="alternate" hreflang="x-default" href={abs('es')} />
+
+<meta property="og:type" content="website" />
+<meta property="og:url" content={canonical} />
+<meta property="og:title" content={seo.title} />
+<meta property="og:description" content={seo.description} />
+{image && <meta property="og:image" content={image} />}
+<meta property="og:site_name" content={seo.siteName} />
+<meta property="og:locale" content={ogLocale(lang)} />
+<meta property="og:locale:alternate" content={ogLocale(otherLang(lang))} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={canonical} />
+<meta name="twitter:title" content={seo.title} />
+<meta name="twitter:description" content={seo.description} />
+{image && <meta name="twitter:image" content={image} />}

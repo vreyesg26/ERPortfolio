@@ -51,6 +51,8 @@
         position: relative;
         border-radius: 1rem;
         overflow: hidden;
+        cursor: pointer;
+        max-height: 225px;
 
         & img{
             width: 100%;
@@ -87,7 +89,7 @@
         margin-bottom: .75rem;
     }
     &__button{
-        padding: .5rem;
+        padding: .4rem;
 
     }
 }
