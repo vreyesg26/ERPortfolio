@@ -14,4 +14,13 @@ describe('whatsappUrl', () => {
   it('codifica los caracteres que romperían la consulta', () => {
     expect(whatsappUrl('1', 'a&b=c')).toBe('https://api.whatsapp.com/send?phone=1&text=a%26b%3Dc')
   })
+
+  // Un teléfono con el formato documentado sale igual (los dígitos no se escapan),
+  // así que esta prueba usa uno fuera de formato: es el único caso donde se nota.
+  it('un teléfono fuera de formato no puede añadir parámetros a la consulta', () => {
+    const url = whatsappUrl('1&text=inyectado', 'hola')
+    expect(url).toBe('https://api.whatsapp.com/send?phone=1%26text%3Dinyectado&text=hola')
+    // Un solo "text=" real: el inyectado quedó dentro del valor de phone.
+    expect(url.match(/[?&]text=/g)).toHaveLength(1)
+  })
 })

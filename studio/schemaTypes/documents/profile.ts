@@ -74,7 +74,12 @@ export const profile = defineType({
       description:
         'Con código de país y sin el signo "+", sin espacios ni guiones, por ejemplo "50499999999". Es el formato que pide WhatsApp para los enlaces de contacto.',
       type: 'string',
-      validation: (rule) => rule.required(),
+      // La descripción ya exigía solo dígitos; esto lo hace cumplir. Sin la regla, un
+      // valor con "&" o "=" se colaba en la consulta del enlace de WhatsApp.
+      validation: (rule) =>
+        rule
+          .required()
+          .regex(/^\d{8,15}$/, {name: 'solo dígitos, entre 8 y 15'}),
     }),
     defineField({
       name: 'whatsappMessage',

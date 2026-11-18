@@ -13,7 +13,13 @@ const {links} = Astro.props
 <ul class="profile__social">
   {
     links.map((link) => (
-      <a href={link.url} target="_blank" class="profile__social-link" aria-label={link.name}>
+      <a
+        href={link.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="profile__social-link"
+        aria-label={link.name}
+      >
         <i class={link.icon} />
       </a>
     ))
