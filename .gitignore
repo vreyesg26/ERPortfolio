@@ -1,9 +1,13 @@
-.env.local
-.env*.local
-.env
+# Cualquier fichero de entorno, a cualquier profundidad. Las reglas anteriores
+# (.env.local, .env*.local, .env) cubrian lo que existia, pero no .env.production
+# ni .env.development, que Astro/Vite y la CLI de Sanity si cargan. La excepcion
+# deja pasar la plantilla, que es la unica que debe estar versionada.
+.env*
+!.env.example
 .DS_Store
 node_modules
 dist
 .astro
 .sanity
 studio/schema.json
+.agents

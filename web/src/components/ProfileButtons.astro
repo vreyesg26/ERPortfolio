@@ -24,12 +24,23 @@ const whatsapp = whatsappUrl(profile.whatsappPhone, profile.whatsappMessage)
   }
 
   <div class="profile__buttons-small">
-    <a href={whatsapp} target="_blank" class="button button__small button__gray" id="whatsapp-button">
+    <a
+      href={whatsapp}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="button button__small button__gray"
+      id="whatsapp-button"
+    >
       <i class="ri-whatsapp-line" />
     </a>
     {
       profile.messengerUrl && (
-        <a href={profile.messengerUrl} target="_blank" class="button button__small button__gray">
+        <a
+          href={profile.messengerUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="button button__small button__gray"
+        >
           <i class="ri-messenger-line" />
         </a>
       )

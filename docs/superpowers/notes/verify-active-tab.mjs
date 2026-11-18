@@ -33,7 +33,15 @@ const TYPES = {
 }
 
 const server = createServer((req, res) => {
-  const url = decodeURIComponent(req.url.split('?')[0])
+  // decodeURIComponent lanza URIError con una secuencia mal formada (p. ej. /%E0%A4%A).
+  // Sin este try el manejador propaga la excepción y tumba el proceso entero.
+  let url
+  try {
+    url = decodeURIComponent(req.url.split('?')[0])
+  } catch {
+    res.writeHead(400)
+    return res.end('ruta mal codificada')
+  }
   let file = join(root, normalize(url).replace(/^(\.\.[/\\])+/, ''))
   if (existsSync(file) && statSync(file).isDirectory()) file = join(file, 'index.html')
   if (!existsSync(file)) {
