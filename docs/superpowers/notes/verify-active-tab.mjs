@@ -146,11 +146,32 @@ check('entrar directo a /en/ abre la pestaña por defecto', await state(), {
   lang: 'en', panel: 'projects', pill: '#projects', pills: 1, panels: 1,
 })
 
-// ---------- las pestañas siguen funcionando tras un cambio de idioma ----------
+// ---------- entrar directo a /en/ y de ahí cambiar a español ----------
+// Importa que este caso NO pase por la raíz. El oyente se registra una sola vez al
+// cargar y sobrevive a las navegaciones, así que entrando por / el cambio de idioma
+// funcionaría igual aunque /en/ se hubiera publicado con el código anterior.
+await clickTab('skills')
+check('clic en Skills desde una carga directa en inglés', await state(), {
+  lang: 'en', panel: 'skills', pill: '#skills', pills: 1, panels: 1,
+})
+
+await spyOnSwap()
 await page.click('#language-button')
 await page.waitForFunction(() => document.documentElement.lang === 'es')
 await waitHydrated()
 await page.waitForTimeout(400)
+check(
+  'entrando por /en/, el documento entrante ya traía Skills marcada',
+  await page.evaluate(() => window.__swaps),
+  ['skills'],
+)
+check('/en/ directo -> es: se mantiene en Skills', await state(), {
+  lang: 'es', panel: 'skills', pill: '#skills', pills: 1, panels: 1,
+})
+
+// ---------- las pestañas siguen funcionando tras un cambio de idioma ----------
+// Se viene del cambio de idioma de arriba, con Aptitudes abierta: el primer clic cae
+// en la pestaña ya activa (que debe ser inocuo) y el segundo cambia de verdad.
 await clickTab('skills')
 await clickTab('about')
 check('tras cambiar de idioma los clics siguen funcionando', await state(), {
